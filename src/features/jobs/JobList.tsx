@@ -155,7 +155,7 @@ const JobList: React.FC = () => {
                 {job.location}
               </Box>
               <Typography sx={{ color: 'white', opacity: 0.85, fontSize: 15, mb: 1 }}>
-                Salary: {job.salary}
+                Allocated Budget: {job.salary}
               </Typography>
               <Chip label={job.type} sx={{ background: '#F1E0FF', width:"fit-content",color: '#6300B3', fontWeight: 600, fontSize: 14, borderRadius: 1, mb: 2 }} />
             </Box>
@@ -177,7 +177,7 @@ const JobList: React.FC = () => {
               }}
               onClick={() => navigate(`/jobs/${job.id}`)}
             >
-              View details
+              View CVs
             </Button>
             <Button
               variant="outlined"

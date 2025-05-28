@@ -121,10 +121,7 @@ const CandidateDetails: React.FC = () => {
             <EmailIcon sx={{ fontSize: 20, mr: 1 }} /> {candidateDetails?.fields?.Email} 
             
           </Box>
-          <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <LocationPinIcon sx={{ fontSize: 20, mr: 1 }} /> {candidateDetails?.fields?.CV_Location} 
-            
-          </Box>
+          
           <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
             <DateRangeIcon sx={{ fontSize: 20, mr: 1 }} /> {new Date(candidateDetails?.createdTime).toLocaleDateString('en-US', {
   year: 'numeric',
@@ -136,9 +133,9 @@ const CandidateDetails: React.FC = () => {
           </Box>
           
           <Box sx={{ color: 'white', opacity: 0.85, mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> {candidateDetails?.fields?.FinalScore} 
+          <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> {candidateDetails?.fields?.FinalScore} / 1000
           </Box>
-          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 18, mt: 2 }}>Role Fit: {candidateDetails?.fields?.RoleFit} </Typography>
+          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 18, mt: 2 }}>Role Fit: {candidateDetails?.fields?.RoleFit} / 10</Typography>
           {/* <Typography sx={{ color: 'white', opacity: 0.7, fontWeight: 400, fontSize: 16 }}></Typography> */}
           <Chip label={candidate.score} sx={{ position: 'absolute', top: 24, right: 24, background: '#23234f', color: 'white', fontWeight: 700, fontSize: 16, borderRadius: 2 }} />
         </GradientCard>
@@ -148,11 +145,11 @@ const CandidateDetails: React.FC = () => {
           <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>
           <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> {candidateCallDetails?.fields?.
 final_score
-}
+} /1000
             </Typography>
-          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Final AI Short Rationale</Typography>
+          {/* <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Final AI Short Rationale</Typography>
           <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1, wordBreak: 'break-word', // ensures long words break into the next line
-    whiteSpace: 'normal', }}>{candidateCallDetails?.fields?.Final_short_rationale}</Typography>
+    whiteSpace: 'normal', }}>{candidateCallDetails?.fields?.Final_short_rationale}</Typography> */}
           {/* <Button onClick={() => navigate(`/candidates/${candidate.id}/call-insights`)}>View More</Button> */}
              <Button
                           variant="outlined"
@@ -171,7 +168,7 @@ final_score
                           }}
                           onClick={() => navigate(`/candidates/${name}/call-insights`)}
                         >
-                          View More
+                          View Details
                         </Button></>: 
                         <Box> <Typography sx={{ fontWeight: 300, fontSize: 18, mb: 2 }}>No Call has been intiated. To intita ecall please click on belo button</Typography>
                          <Button
@@ -210,9 +207,9 @@ final_score
         </GradientCard>
       </Box>
       <Box sx={{ background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4  }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>AI ShortRationale
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Profile Summary
         </Typography>
-        {candidateDetails?.fields?.ShortRationale
+        {candidateDetails?.fields?.ProfileSummary
 
           }
        
@@ -268,6 +265,42 @@ CV_Certificates
 
         {candidateDetails?.fields?.
 CV_Education
+
+
+          }
+      
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4,mt:'30px', color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Languages</Typography>
+        {/* <Chip label={`AI Score:  ${candidateDetails?.fields?.Language}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} /> */}
+
+        {candidateDetails?.fields?.
+Languages
+
+
+
+          }
+      
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4,mt:'30px', color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Location</Typography>
+        <Chip label={`AI Score:  ${candidateDetails?.fields?.Location}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+
+        {candidateDetails?.fields?.
+CV_Location
+
+
+
+          }
+      
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4,mt:'30px', color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Interests</Typography>
+        <Chip label={`AI Score:  ${candidateDetails?.fields?.Interests}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+
+        {candidateDetails?.fields?.
+CV_Interests
+
 
 
           }

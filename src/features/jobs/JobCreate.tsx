@@ -77,9 +77,9 @@ const gradientInputSx = {
 
 const JobCreate: React.FC = () => {
   const navigate = useNavigate();
-  const locations = ['Dubai', 'London', 'New York'];
-  const onsiteRemote = ['Full-Time', 'Remote'];
-  const languages = [ 'English', 'French'];
+  const locations = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman','Umm Al Quwain','Ras Al Khaimah', 'Fujairah'];
+  const onsiteRemote = ['Onsite', 'Remote', 'Hybrid'];
+  const languages = [ 'English', 'Arabic'];
  
 
 

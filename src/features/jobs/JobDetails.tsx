@@ -1,5 +1,5 @@
 import React, { useEffect, useState, type ReactEventHandler } from 'react';
-import { Box, Typography, Button, Chip, Tabs, Tab } from '@mui/material';
+import { Box, Typography, Button, Chip, Tabs, Tab, Tooltip } from '@mui/material';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import scoreCard from '@/assets/scoreCard.png'
@@ -8,6 +8,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import AirtableListener from './WebSocket';
 import { useAirtableContext } from '@/context/AirtableContext';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
 const job = {
@@ -153,6 +154,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
 
   const fetchFiles = async (oneDriveFolderID:any) => {
     try {
+      //https://innova-recruiter-candidate.darkube.app
       const res:any = await axios.get(`https://innova-recruiter-candidate.darkube.app/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
       const jobs = res.data?.files.map((record:any) => ({
         id: record.id,
@@ -252,18 +254,16 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
       </Typography>
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, mb: 4, display: 'flex', flexDirection: 'column', position: 'relative', color: 'white', boxShadow: 6 }}>
         <Chip label={jobDetails?.Onsite} sx={{ position: 'absolute', top: 24, right: 24, background: '#F1E0FF', color: '#6300B3', fontWeight: 700, fontSize: 14, borderRadius: 1 }} />
-        <Typography sx={{  fontSize: 19, mb: 2 }}>
-        <span style={{ fontWeight: 400 }}>Job Location : </span>  <span style={{ fontWeight: 100 }}>{jobDetails.location}</span>
-        </Typography>
+       
         <Typography sx={{ fontSize: 19, mb: 2 }}>
-        <span style={{ fontWeight: 400 }}>Description : </span> <span style={{ fontWeight: 100 }}>{jobDetails.Job_Description}</span>
+        <span style={{ fontWeight: 400 }}>Job Description : </span>
+        <Tooltip title={jobDetails.Job_Description}>
+                      <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
+                    </Tooltip>
+         {/* <span style={{ fontWeight: 100 }}>{jobDetails.Job_Description}</span> */}
         </Typography>
-        <Typography sx={{  fontSize: 19, mb: 2 }}>
-        <span style={{ fontWeight: 400 }}>Salary : </span>  <span style={{ fontWeight: 100 }}>{jobDetails.salary}</span>
-        </Typography>
-        <Typography sx={{ fontSize: 19 }}>
-          <span style={{ fontWeight: 400 }}>Expereince : </span><span style={{ fontWeight: 100 }}>{jobDetails.Experience}</span>
-        </Typography>
+        
+      
       </Box>
       <Tabs
         value={tab}
@@ -279,11 +279,14 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
           <GradientCard
             key={candidate.id}
             gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
-            onClick={() => navigate(`/candidates/${candidate.name }`)}
-            sx={{ borderRadius: 2, boxShadow: 6, p: 1, minWidth: 320,  minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+           
+            sx={{ borderRadius: 2, boxShadow: 6, p: 1, minWidth: 320,  minHeight: 180, display: 'flex',cursor:"pointer", flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <Box>
-              <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 20, mb: 1 }}>
+            <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 20, mb: 1 }}>
+                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />Name of person
+              </Typography>
+              <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 14, mb: 1 }}>
                 <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.name}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, mb:1, fontSize: 15 }}>
@@ -293,9 +296,11 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, fontSize: 15 }}>
                <img src={scoreCard} style={{height:"20px",marginRight: "14px" }}/>
                 {/* {candidate.finalScore >= 0 ? candidate.finalScore : "NA"} */}
-                {candidate.finalScore !== null && candidate.finalScore !== undefined
+                AI Score: {candidate.finalScore !== null && candidate.finalScore !== undefined
   ? candidate.finalScore
-  : "NA"}
+  : "NA"} / 1000  <Tooltip title="Short rationla o AI">
+  <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
+</Tooltip>
 
               </Box>
             </Box>
@@ -303,8 +308,43 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
           
               {tab === 0 ?
               <> 
-              
-{candidate?.RecruiterApproval == "Proceed"  ? <>   <Button
+               <Button
+                variant="outlined"
+                sx={{
+                  color: 'white',
+                  borderColor: 'white',
+                  fontWeight: 700,
+                  borderRadius: 2,
+                  px: 2.5,
+                  py: 1,
+                  fontSize: 15,
+                  textTransform: 'none',
+                  fontFamily: 'Montserrat',
+                  '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
+                }}
+                onClick={(event) =>(event.stopPropagation(), navigate(`/candidates/${candidate.name }`))}
+              >
+               Details
+              </Button> <Button
+                variant="outlined"
+                sx={{
+                  color: 'white',
+                  borderColor: 'white',
+                  fontWeight: 700,
+                  borderRadius: 2,
+                  px: 2.5,
+                  py: 1,
+                  fontSize: 15,
+                  textTransform: 'none',
+                  fontFamily: 'Montserrat',
+                  '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
+                }}
+                onClick={(event) => handleIntiateCall(event,candidate.airtable_id ,"Reject" )}
+              >
+                Reject
+              </Button>
+{candidate?.RecruiterApproval == "Proceed"  ? 
+<>   <Button
   variant="contained"
   sx={{
     background: 'white',
@@ -335,7 +375,8 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
  
 
                 View Call Details
-              </Button></>:<> <Button
+              </Button></>:
+              <> <Button
   variant="contained"
   sx={{
     background: 'white',
@@ -366,26 +407,9 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
 
                 Initiate Call
               </Button></> }
-           
+             
 
-              <Button
-                variant="outlined"
-                sx={{
-                  color: 'white',
-                  borderColor: 'white',
-                  fontWeight: 700,
-                  borderRadius: 2,
-                  px: 2.5,
-                  py: 1,
-                  fontSize: 15,
-                  textTransform: 'none',
-                  fontFamily: 'Montserrat',
-                  '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
-                }}
-                onClick={(event) => handleIntiateCall(event,candidate.airtable_id ,"Reject" )}
-              >
-                Reject
-              </Button></> : <>  <Button
+             </> : <>  <Button
   variant="contained"
   sx={{
     background: 'white',

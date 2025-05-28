@@ -101,18 +101,41 @@ const CallInsightView: React.FC = () => {
           <EmailIcon sx={{ fontSize: 20 }} /> {candidate.email}
         </Box> */}
        
-        <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>Score: {candidateCallDetails?.fields?.final_score}</Typography>
-        <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>AI Short Rationale :</Typography>
-        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidateCallDetails?.fields?.
-Final_short_rationale
-}</Typography>
+        <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>Score: {candidateCallDetails?.fields?.final_score} / 1000</Typography>
+      
         <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Recruiter Notes :</Typography>
         <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidateCallDetails?.fields?.
 RecruiterNotes
 }</Typography>
         <Chip label={candidateCallDetails?.fields?.CallStatus}sx={{ position: 'absolute', top: 24, right: 24, background: '#177E00', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+        <Button
+          variant="contained"
+          sx={{
+            background: '#385F8D',
+            color: 'white',
+            fontWeight: 700,
+            borderRadius: 6,
+            px: 6,
+            py: 1,
+            fontSize: 18,
+            textTransform: 'none',
+            fontFamily: 'Montserrat',
+            position: 'absolute', top: 74, right: 24,
+            boxShadow: 2,
+            '&:hover': { background: '#385F8D', },
+          }}
+          disabled
+        >
+          Approve
+        </Button>
       </GradientCard>
 
+      <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
+      <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, }}>AI Short Rationale :</Typography>
+        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidateCallDetails?.fields?.
+Final_short_rationale
+}</Typography>
+      </Box>
       {/* Call Insights Table */}
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
         <Table sx={{ '& .MuiTableCell-root': { borderBottomColor: '#3a3a3a', fontFamily: 'Montserrat' } }}>
@@ -178,24 +201,7 @@ RecruiterNotes
 
       {/* Approve Button */}
       <Box sx={{ display: 'flex', }}>
-        <Button
-          variant="contained"
-          sx={{
-            background: '#385F8D',
-            color: 'white',
-            fontWeight: 700,
-            borderRadius: 6,
-            px: 6,
-            py: 1,
-            fontSize: 18,
-            textTransform: 'none',
-            fontFamily: 'Montserrat',
-            boxShadow: 2,
-            '&:hover': { background: '#385F8D', },
-          }}
-        >
-          Approve
-        </Button>
+       
       </Box>
     </Box>
   );
