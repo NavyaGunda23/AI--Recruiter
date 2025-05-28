@@ -9,7 +9,7 @@ import axios from 'axios';
 import AirtableListener from './WebSocket';
 import { useAirtableContext } from '@/context/AirtableContext';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 
 const job = {
   title: 'Front End Developer',
@@ -39,12 +39,15 @@ const JobDetails: React.FC = () => {
 
   const { jobId } = useParams();
   const fetchRecords = async () => {
+
+  
+
     try {
       const response = await fetch(
-        `https://api.airtable.com/v0/appeH3LWtVbw0DDIv/Job%20Openings/${jobId}`,
+        `https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblAz9PFQthvbxaHu/${jobId}`,
         {
           headers: {
-            Authorization: `Bearer pate5F34PFXKdUFUU.2849c608f23ec107a0cc07b3fc92c2031e37f1b28c68026d23475ddd9bb1d9ae` ,// or hardcoded if local testing
+            Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
             'Content-Type': 'application/json'
           }
         }
@@ -155,7 +158,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
   const fetchFiles = async (oneDriveFolderID:any) => {
     try {
       //https://innova-recruiter-candidate.darkube.app
-      const res:any = await axios.get(`https://innova-recruiter-candidate.darkube.app/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
+      const res:any = await axios.get(`https://innova-recruiter-web.darkube.app/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
       const jobs = res.data?.files.map((record:any) => ({
         id: record.id,
         name: record.name || '',
@@ -178,6 +181,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
   
     const scoreMap: Record<string, number> = {};
     const recuiterApproval: Record<string, number> = {};
+    const canidateNames: Record<string, number> = {};
     const airtableIDMap: Record<string, string> = {};
     const rejectedCandidates: any[] = [];
   
@@ -185,7 +189,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
       const name = record.fields?.CandidateFileName?.trim();
       const finalScore = record.fields?.FinalScore;
       const status = record.fields?.RecruiterApproval;
-      
+      const canidateName = record.fields?.Name;
       if (!name) return;
   
       if (status === "Reject") {
@@ -203,6 +207,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
       if (finalScore !== undefined) {
         scoreMap[name] = finalScore;
         recuiterApproval[name] = status;
+        canidateNames[name] = canidateName;
       }
   
       airtableIDMap[name] = record.id;
@@ -216,6 +221,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
         finalScore: scoreMap[candidate.name.trim()] ?? null,
         airtable_id: airtableIDMap[candidate.name.trim()] ?? null,
         RecruiterApproval:recuiterApproval[candidate.name.trim()] ?? null,
+        canidateName:canidateNames[candidate.name.trim()] ?? null,
       }));
   
     console.log("enrichedCandidates", enrichedCandidates);
@@ -284,10 +290,10 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
           >
             <Box>
             <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 20, mb: 1 }}>
-                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />Name of person
+                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.canidateName ? candidate.canidateName : candidate.name}
               </Typography>
               <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 14, mb: 1 }}>
-                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.name}
+                <FilePresentIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.name}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, mb:1, fontSize: 15 }}>
                 <WorkOutlineIcon sx={{ fontSize: 18, mr: 1 }} />

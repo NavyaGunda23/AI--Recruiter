@@ -17,9 +17,9 @@ const JobSchema = Yup.object().shape({
   Location: Yup.array().of(Yup.string()).min(1, 'Select at least one location'),
   'Onsite/Remote': Yup.array().of(Yup.string()).min(1, 'Select at least one'),
   Language: Yup.array().of(Yup.string()).min(1, 'Select at least one language'),
-  salary: Yup.string().required('Required'),
-  Recruiter_email_address: Yup.string().email('Invalid email').required('Required'),
-  Recruiter_name: Yup.string().required('Required'),
+  Salary: Yup.string().required('Required'),
+  Recruiter_Email_Address: Yup.string().email('Invalid email').required('Required'),
+  Recruiter_Name: Yup.string().required('Required'),
 });
 
 const initialValues = {
@@ -29,11 +29,11 @@ const initialValues = {
   Location: [],
   'Onsite/Remote': [],
   Language: [],
-  salary: '12,000 AED',
-  Recruiter_email_address: 'SAMPLE@SAMPLE.COM',
-  Recruiter_name: 'NAME',
-  submittedAt: '',
-  formMode: 'create' as 'create' | 'edit',
+  Salary: '12,000 AED',
+  Recruiter_Email_Address: 'SAMPLE@SAMPLE.COM',
+  Recruiter_Name: 'NAME',
+  // submittedAt: '',
+  // formMode: 'create' as 'create' | 'edit',
 };
 
 const gradientInputSx = {
@@ -94,7 +94,7 @@ const JobCreate: React.FC = () => {
         onSubmit={async (values, { setSubmitting }) => {
           const folderName = values?.Position
           try {
-            const res:any = await axios.post("https://innova-recruiter-candidate.darkube.app/api/create-folder", {
+            const res:any = await axios.post("https://innova-recruiter-web.darkube.app/api/create-folder", {
               folderName,
             });
            const driveFileid = res?.data?.folder?.id
@@ -103,13 +103,15 @@ const JobCreate: React.FC = () => {
   //   //  oneDriveFolderID:driveFileid
   //   }
     // const data = { Position: values?.Position }
+
     const data = {
       records: [
         {
           fields: {
             ...values,
-            formMode:'create',
-            submittedAt:new Date().toISOString(),
+            // formMode:'create',
+            // submittedAt:new Date().toISOString(),
+            Experience:Number(values?.Experience),
             oneDriveFolderID:driveFileid
           }
         }
@@ -117,12 +119,14 @@ const JobCreate: React.FC = () => {
     };
   
     await axios.post(
-      'https://api.airtable.com/v0/appeH3LWtVbw0DDIv/Job%20Openings',
+
+      // 'https://airtable.com/app6R5bTSGcKo2gmV/Recruiter_Job_role'
+      'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblAz9PFQthvbxaHu',
   data,
       
       {
         headers: {
-          Authorization: `Bearer pate5F34PFXKdUFUU.2849c608f23ec107a0cc07b3fc92c2031e37f1b28c68026d23475ddd9bb1d9ae` ,// or hardcoded if local testing
+          Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
           'Content-Type': 'application/json'
         }
       }
@@ -295,7 +299,7 @@ const JobCreate: React.FC = () => {
               </Box>
               <Box>
                 <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Recruiter Email Address</Typography>
-                <Field name="Recruiter_email_address">
+                <Field name="Recruiter_Email_Address">
                   {({ field, meta }: FieldProps) => (
                      <MuiTextField
                       {...field}
@@ -315,7 +319,7 @@ const JobCreate: React.FC = () => {
               </Box>
               <Box>
                 <Typography sx={{ color: 'white', fontWeight:300, mb: 1, fontFamily: 'Montserrat' }}>Salary</Typography>
-                <Field name="salary">
+                <Field name="Salary">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
                       {...field}
@@ -335,7 +339,7 @@ const JobCreate: React.FC = () => {
               </Box>
               <Box>
                 <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Recruter Name</Typography>
-                <Field name="Recruiter_name">
+                <Field name="Recruiter_Name">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
                       {...field}

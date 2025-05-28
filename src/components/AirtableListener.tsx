@@ -54,7 +54,7 @@ const AirtableListener: React.FC = () => {
     const socket = new WebSocket(
         window.location.protocol === 'https:'
           ? 'wss://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
-          : 'ws://localhost:5174'
+          : 'ws://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
       );
 
     socket.onopen = () => {

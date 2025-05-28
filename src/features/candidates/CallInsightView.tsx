@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box, Typography, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import GradientCard from '@/components/GradientCard';
 import EmailIcon from '@mui/icons-material/Email';
@@ -10,6 +10,8 @@ import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { useAirtableContext } from '@/context/AirtableContext';
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 // Mock data for call insights
 const mockInsights = [
@@ -113,9 +115,9 @@ RecruiterNotes
           sx={{
             background: '#385F8D',
             color: 'white',
-            fontWeight: 700,
+            fontWeight: 400,
             borderRadius: 6,
-            px: 6,
+            px: 2,
             py: 1,
             fontSize: 18,
             textTransform: 'none',
@@ -123,6 +125,11 @@ RecruiterNotes
             position: 'absolute', top: 74, right: 24,
             boxShadow: 2,
             '&:hover': { background: '#385F8D', },
+            '&.Mui-disabled': {
+      background: '#716F6F',
+      color: '#535353',
+      cursor: 'not-allowed',
+    },
           }}
           disabled
         >
@@ -137,7 +144,7 @@ Final_short_rationale
 }</Typography>
       </Box>
       {/* Call Insights Table */}
-      <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
+      {/* <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
         <Table sx={{ '& .MuiTableCell-root': { borderBottomColor: '#3a3a3a', fontFamily: 'Montserrat' } }}>
           <TableHead>
             <TableRow>
@@ -147,9 +154,7 @@ Final_short_rationale
               <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
                 Answers <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
               </TableCell>
-              {/* <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
-                Comments <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-              </TableCell> */}
+              
               <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>SCORE</TableCell>
             </TableRow>
           </TableHead>
@@ -172,14 +177,7 @@ Final_short_rationale
                     </Tooltip>
                   </Box>
                 </TableCell>
-                {/* <TableCell sx={{ color: 'white', opacity: 0.85 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {row.comments}
-                    <Tooltip title={row.comments}>
-                      <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-                    </Tooltip>
-                  </Box>
-                </TableCell> */}
+               
                 <TableCell sx={{ color: 'white', opacity: 0.85 }}>{row.score}</TableCell>
               </TableRow>
             ))}
@@ -189,7 +187,49 @@ Final_short_rationale
             </TableRow>
           </TableBody>
         </Table>
+      </Box> */}
+      <Typography sx={{fontSize:"20px",color:"white",mb:2}}>Question Details:</Typography>
+      <Box sx={{ fontFamily: 'Montserrat' }}>
+      {questionEntries?.map((row: any, idx: number) => (
+        <Accordion key={idx} sx={{ backgroundColor: '#261F53', color: 'white', boxShadow: 6, mb: 2, borderRadius: 1, p: 0, }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+          <Box sx={{display:"flex",justifyContent:"space-between",width:"100%"}}>
+          <Typography fontWeight={400} sx={{lineHeight:"30px"}}>
+              Question {idx + 1}
+              
+            </Typography>
+            <Chip label={`Score`+row.score} sx={{  background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', color: 'white', fontWeight: 400, fontSize: 12, borderRadius: 2 }} />
+
+
+            {/* <Typography sx={{ opacity: 0.85, mt: 1 }}>
+              <strong>Score:</strong> {row.score}
+            </Typography> */}
+          </Box>
+            
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography sx={{ opacity: 0.85, mb: 1 }}>
+              <strong>Question:</strong> {row.question}
+            </Typography>
+            <Typography sx={{ opacity: 0.85 }}>
+              <strong>Answer:</strong> {row.answer}
+             
+            </Typography>
+            {/* Uncomment this if you want to include comments */}
+            {/* <Typography sx={{ opacity: 0.85, mt: 1 }}>
+              <strong>Comments:</strong> {row.comments}
+            </Typography> */}
+           
+          </AccordionDetails>
+        </Accordion>
+      ))}
+
+      <Box sx={{ mt: 2, background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', p: 2, borderRadius: 1,mb:4 }}>
+        <Typography fontWeight={700} fontSize={16} color="white" align='right'>
+          TOTAL SCORE: {candidateCallDetails?.fields?.final_score}
+        </Typography>
       </Box>
+    </Box>
 
       {/* Candidate Notes */}
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
