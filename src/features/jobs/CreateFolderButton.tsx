@@ -8,7 +8,7 @@ export default function CreateFolder() {
     if (!folderName) return alert("Enter a folder name");
 
     try {
-      const res = await axios.post("http://localhost:5172/api/create-folder", {
+      const res = await axios.post("https://innova-recruiter-candidate.darkube.app/api/api/create-folder", {
         folderName,
       });
       alert(`✅ Folder created:`);

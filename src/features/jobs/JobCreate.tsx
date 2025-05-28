@@ -94,7 +94,7 @@ const JobCreate: React.FC = () => {
         onSubmit={async (values, { setSubmitting }) => {
           const folderName = values?.Position
           try {
-            const res:any = await axios.post("http://localhost:5172/api/create-folder", {
+            const res:any = await axios.post("https://innova-recruiter-candidate.darkube.app/api/create-folder", {
               folderName,
             });
            const driveFileid = res?.data?.folder?.id
