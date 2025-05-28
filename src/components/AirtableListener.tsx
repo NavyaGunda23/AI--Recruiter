@@ -51,7 +51,7 @@ const AirtableListener: React.FC = () => {
   } = useAirtableContext();
 
   useEffect(() => {
-    const socket = new WebSocket('ws://innova-recruiter-candidate.darkube.app'); // Adjust for your backend
+    const socket = new WebSocket('wss://innova-recruiter-candidate.darkube.app'); // Adjust for your backend
 
     socket.onopen = () => {
       console.log('✅ WebSocket connected');
