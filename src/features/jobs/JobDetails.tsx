@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, type ReactEventHandler } from 'react';
 import { Box, Typography, Button, Chip, Tabs, Tab } from '@mui/material';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import scoreCard from '@/assets/scoreCard.png'
 import GradientCard from '@/components/GradientCard';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import AirtableListener from './WebSocket';
+import { useAirtableContext } from '@/context/AirtableContext';
+
 
 const job = {
   title: 'Front End Developer',
@@ -25,6 +29,10 @@ const candidates = [
 ];
 
 const JobDetails: React.FC = () => {
+  // const { state } = useAirtableContext();
+  const {
+    screeningRecords,
+  } = useAirtableContext();
   const [jobDetails, setJobDetails] = useState<any>({})
   const [candidateDetails, setCandidateDetails] = useState<any>([])
 
@@ -51,19 +59,23 @@ const JobDetails: React.FC = () => {
       const jobs ={
         id: data.id,
         title: data.fields.Position || '',
-        location: data.fields.Location || '',
+        location: data.fields.Location?.join(' ') || '',
         Job_Description: data.fields.Job_Description || '',
         salary: data.fields.salary || '',
         Experience: data.fields.Experience || '',
+        Onsite:data.fields['Onsite/Remote']?.join(' '),
+        oneDriveFolderID:data.fields.oneDriveFolderID || '',
       }
   
       setJobDetails(jobs);
+      fetchFiles(jobs?.oneDriveFolderID)
     } catch (err) {
       console.error('Error:', err);
       // setError(err?.message);
     }
   };
 
+  //from aritable 
   const fetchAppliedCandaidates = async () => {
     try {
       const response = await fetch(
@@ -101,21 +113,145 @@ const JobDetails: React.FC = () => {
     }
   };
 
+  const handleIntiateCall = (event:any,airtable_id:any,canidateStatus:any) =>{
+    event?.stopPropagation()
+    const myHeaders = new Headers();
+myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Cookie", "brw=brwiMeamMoDgk2PG7; brwConsent=opt-in; AWSALBTG=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=; AWSALBTGCORS=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=");
+ 
+const raw = JSON.stringify({
+  "records": [
+    {
+      "id": airtable_id,
+      "fields": {
+        "RecruiterApproval": canidateStatus
+      }
+    }
+  ]
+});
+ 
+const requestOptions:any = {
+  method: "PATCH",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+ 
+fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+  }
+
+
+ 
+
+  //from drive
+  const [candiateDetailsDrive, setCandatdateDetails] = useState<any>([])
+  const [rejectedCandidateDetails, setRejectedCandidateDetails] = useState([]);
+
+  const fetchFiles = async (oneDriveFolderID:any) => {
+    try {
+      const res:any = await axios.get(`http://localhost:5172/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
+      const jobs = res.data?.files.map((record:any) => ({
+        id: record.id,
+        name: record.name || '',
+        weburl: record.webUrl || '',
+      }));
+
+      setCandatdateDetails(jobs)
+     console.log("res",res)
+    } catch (err) {
+      console.error(err);
+      // setError('Failed to fetch files');
+    }
+  };
+
+  useEffect(() => {
+    if (!screeningRecords?.length || !candiateDetailsDrive?.length) return;
+  
+    const airtableRecords = screeningRecords;
+    const rejectedCandidatesSet = new Set<string>();
+  
+    const scoreMap: Record<string, number> = {};
+    const recuiterApproval: Record<string, number> = {};
+    const airtableIDMap: Record<string, string> = {};
+    const rejectedCandidates: any[] = [];
+  
+    airtableRecords.forEach(record => {
+      const name = record.fields?.CandidateFileName?.trim();
+      const finalScore = record.fields?.FinalScore;
+      const status = record.fields?.RecruiterApproval;
+      
+      if (!name) return;
+  
+      if (status === "Reject") {
+        rejectedCandidatesSet.add(name);
+        rejectedCandidates.push({
+          name,
+          finalScore: finalScore ?? null,
+          airtable_id: record.id,
+          RecruiterApproval:status,
+          ...record.fields
+        });
+        return;
+      }
+  
+      if (finalScore !== undefined) {
+        scoreMap[name] = finalScore;
+        recuiterApproval[name] = status;
+      }
+  
+      airtableIDMap[name] = record.id;
+    });
+  
+    // Enrich only non-rejected candidates
+    const enrichedCandidates = candiateDetailsDrive
+      .filter((candidate: any) => !rejectedCandidatesSet.has(candidate.name.trim()))
+      .map((candidate: any) => ({
+        ...candidate,
+        finalScore: scoreMap[candidate.name.trim()] ?? null,
+        airtable_id: airtableIDMap[candidate.name.trim()] ?? null,
+        RecruiterApproval:recuiterApproval[candidate.name.trim()] ?? null,
+      }));
+  
+    console.log("enrichedCandidates", enrichedCandidates);
+    console.log("rejectedCandidates", rejectedCandidates);
+  
+    // Update main candidate details if changed
+    setCandatdateDetails((prev: any) => {
+      const isSame = JSON.stringify(prev) === JSON.stringify(enrichedCandidates);
+      return isSame ? prev : enrichedCandidates;
+    });
+  
+    // Update rejected candidates
+    setRejectedCandidateDetails((prev: any) => {
+      const isSame = JSON.stringify(prev) === JSON.stringify(rejectedCandidates);
+      return isSame ? prev : rejectedCandidates;
+    });
+  
+    console.log("state details", screeningRecords);
+  }, [screeningRecords, candiateDetailsDrive]);
+  
+
 
     useEffect(() => {
       fetchRecords();
       fetchAppliedCandaidates()
+
     }, []);
 
   const [tab, setTab] = React.useState(0);
  const navigate = useNavigate();
   return (
     <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
+      {/* <AirtableListener /> */}
       <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 24, mb: 2 }}>
        <a href='/jobs/list' style={{color:"white"}}>Jobs</a>  <span style={{ color: '#a084e8', fontWeight: 400 }}>/ {jobDetails.title}</span>
       </Typography>
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, mb: 4, display: 'flex', flexDirection: 'column', position: 'relative', color: 'white', boxShadow: 6 }}>
-        <Chip label={job.type} sx={{ position: 'absolute', top: 24, right: 24, background: '#F1E0FF', color: '#6300B3', fontWeight: 700, fontSize: 14, borderRadius: 1 }} />
+        <Chip label={jobDetails?.Onsite} sx={{ position: 'absolute', top: 24, right: 24, background: '#F1E0FF', color: '#6300B3', fontWeight: 700, fontSize: 14, borderRadius: 1 }} />
         <Typography sx={{  fontSize: 19, mb: 2 }}>
         <span style={{ fontWeight: 400 }}>Job Location : </span>  <span style={{ fontWeight: 100 }}>{jobDetails.location}</span>
         </Typography>
@@ -139,16 +275,16 @@ const JobDetails: React.FC = () => {
         <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
-        {candidateDetails.map((candidate:any) => (
+        {(tab === 0 ? candiateDetailsDrive : rejectedCandidateDetails).map((candidate:any) => (
           <GradientCard
             key={candidate.id}
             gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
-            onClick={() => navigate(`/candidates/${candidate.id}`)}
+            onClick={() => navigate(`/candidates/${candidate.name }`)}
             sx={{ borderRadius: 2, boxShadow: 6, p: 1, minWidth: 320,  minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <Box>
               <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 20, mb: 1 }}>
-                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate['Candidate Name']}
+                <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.name}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, mb:1, fontSize: 15 }}>
                 <WorkOutlineIcon sx={{ fontSize: 18, mr: 1 }} />
@@ -156,11 +292,19 @@ const JobDetails: React.FC = () => {
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, fontSize: 15 }}>
                <img src={scoreCard} style={{height:"20px",marginRight: "14px" }}/>
-                {candidate.score ? candidate.score : "NA"}
+                {/* {candidate.finalScore >= 0 ? candidate.finalScore : "NA"} */}
+                {candidate.finalScore !== null && candidate.finalScore !== undefined
+  ? candidate.finalScore
+  : "NA"}
+
               </Box>
             </Box>
             <Box sx={{ display: 'flex', gap: 2, mt: 5 }}>
-            <Button
+          
+              {tab === 0 ?
+              <> 
+              
+{candidate?.RecruiterApproval == "Proceed"  ? <>   <Button
   variant="contained"
   sx={{
     background: 'white',
@@ -176,18 +320,54 @@ const JobDetails: React.FC = () => {
       background: '#e3e3e3',
     },
     '&.Mui-disabled': {
-      background: '#f5f5f5',
-      color: '#a0a0a0',
+      background: '#716F6F',
+      color: '#535353',
       cursor: 'not-allowed',
     },
   }}
-  disabled={Number(candidate?.score || 0) > 0 ? true : false}
-  onClick={(event) => event.stopPropagation()}
+  disabled={candidate.finalScore !== null && candidate.finalScore !== undefined
+    ? false
+    : true}
+  
+    onClick={(event) =>(event.stopPropagation(),navigate(`/candidates/${candidate.name }/call-insights`))}
+    
+>
+ 
+
+                View Call Details
+              </Button></>:<> <Button
+  variant="contained"
+  sx={{
+    background: 'white',
+    color: '#3a6ea5',
+    fontWeight: 700,
+    borderRadius: 2,
+    px: 2.5,
+    py: 1,
+    fontSize: 15,
+    textTransform: 'none',
+    fontFamily: 'Montserrat',
+    '&:hover': {
+      background: '#e3e3e3',
+    },
+    '&.Mui-disabled': {
+      background: '#716F6F',
+      color: '#535353',
+      cursor: 'not-allowed',
+    },
+  }}
+  disabled={candidate.finalScore !== null && candidate.finalScore !== undefined
+    ? false
+    : true}
+  
+  onClick={(event) => handleIntiateCall(event,candidate.airtable_id ,"Proceed" )}
 >
  
 
                 Initiate Call
-              </Button>
+              </Button></> }
+           
+
               <Button
                 variant="outlined"
                 sx={{
@@ -202,10 +382,41 @@ const JobDetails: React.FC = () => {
                   fontFamily: 'Montserrat',
                   '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                 }}
-                onClick={(event) =>event?.stopPropagation()}
+                onClick={(event) => handleIntiateCall(event,candidate.airtable_id ,"Reject" )}
               >
                 Reject
+              </Button></> : <>  <Button
+  variant="contained"
+  sx={{
+    background: 'white',
+    color: '#3a6ea5',
+    fontWeight: 700,
+    borderRadius: 2,
+    px: 2.5,
+    py: 1,
+    fontSize: 15,
+    textTransform: 'none',
+    fontFamily: 'Montserrat',
+    '&:hover': {
+      background: '#e3e3e3',
+    },
+    '&.Mui-disabled': {
+      background: '#716F6F',
+      color: '#535353',
+      cursor: 'not-allowed',
+    },
+  }}
+  disabled={candidate.finalScore !== null && candidate.finalScore !== undefined
+    ? false
+    : true}
+  
+  onClick={(event) => handleIntiateCall(event,candidate.airtable_id ,"On Hold" )}
+>
+ 
+
+                Select Candiate
               </Button>
+           </>}
             </Box>
           </GradientCard>
         ))}

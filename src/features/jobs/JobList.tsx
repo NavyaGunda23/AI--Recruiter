@@ -41,6 +41,7 @@ const JobList: React.FC = () => {
 
 
   const [records, setRecords] = useState<Job[]>([]);
+  const [recordsInfo, setRecordsInfo] = useState<any>([]);
   const [error, setError] = useState(null);
 
   const fetchRecords = async () => {
@@ -60,7 +61,7 @@ const JobList: React.FC = () => {
       }
   
       const data = await response.json();
-  
+      setRecordsInfo(data.records)
       // Map Airtable records into your desired format
       const jobs = data.records.map((record:any) => ({
         id: record.id,
@@ -79,7 +80,7 @@ const JobList: React.FC = () => {
 
 
 
-    const handleStartScreening = async (event: React.MouseEvent<HTMLButtonElement>,  folderID: string,) => {
+    const handleStartScreening = async (event: React.MouseEvent<HTMLButtonElement>,  folderID: string,index:any) => {
       event.stopPropagation();
       const jobID = folderID
       try {
@@ -89,7 +90,8 @@ const JobList: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            folderID:jobID,
+            ...recordsInfo[index]?.fields
+            
            
           }),
         });
@@ -138,7 +140,7 @@ const JobList: React.FC = () => {
       </Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, justifyContent: 'flex-start', alignItems: 'flex-start', mt: 4 }}>
        {records.length  == 0  && <p style={{color:"white"}}>No jobs created</p>}
-        {records.map((job) => (
+        {records.map((job,index) => (
           <GradientCard
             key={job.id}
             gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
@@ -194,7 +196,7 @@ const JobList: React.FC = () => {
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
               }}
-              onClick={(event) => handleStartScreening(event,job.id)}
+              onClick={(event) => handleStartScreening(event,job.id,index)}
             >
               Start Screening
             </Button>

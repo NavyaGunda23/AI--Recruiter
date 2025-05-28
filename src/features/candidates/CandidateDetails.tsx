@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Chip, Button } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GradientCard from '@/components/GradientCard';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import scoreCard from '@/assets/scoreCard.png'
+import { useAirtableContext } from '@/context/AirtableContext';
+import LocationPinIcon from '@mui/icons-material/LocationPin';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 const candidate = {
   id: '1',
   name: 'Nahid Hasan',
@@ -44,35 +47,112 @@ const candidate = {
 
 const CandidateDetails: React.FC = () => {
   const navigate = useNavigate();
+  // const { state } = useAirtableContext();
+   const {
+      screeningRecords, phoneCallRecords
+    } = useAirtableContext();
+  const { name } = useParams();
+  const [ candidateDetails, setCandatdateDetails] = useState<any>()
+  const [ candidateCallDetails, setCandatdatCalleDetails] = useState<any>()
+
+   useEffect(() => {
+    console.log("name",name)
+      if (!screeningRecords?.length ) return;
+    
+      const candidateDetails = screeningRecords.filter((state) => state?.fields?.CandidateFileName == name )[0];
+      console.log("candidateDetails",candidateDetails)
+      setCandatdateDetails(candidateDetails)
+    
+  
+    }, [screeningRecords,candidateDetails]);
+
+
+    useEffect(() => {
+      const phoneCallDetails = phoneCallRecords.filter((state) => state?.fields?.CandidateFileName == name )[0];
+      console.log("phoneCallDetails",phoneCallDetails)
+      setCandatdatCalleDetails(phoneCallDetails)
+    },[phoneCallRecords,candidateCallDetails])
+    
+
+    const handleIntiateCall = (event:any,airtable_id:any,canidateStatus:any) =>{
+      event?.stopPropagation()
+      const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "brw=brwiMeamMoDgk2PG7; brwConsent=opt-in; AWSALBTG=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=; AWSALBTGCORS=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=");
+   
+  const raw = JSON.stringify({
+    "records": [
+      {
+        "id": airtable_id,
+        "fields": {
+          "RecruiterApproval": canidateStatus
+        }
+      }
+    ]
+  });
+   
+  const requestOptions:any = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+   
+  fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+    }
+
+    
   return (
     <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
       {/* Top Row: Candidate Info and Call Insights */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, mb: 4 }}>
         <GradientCard gradient="linear-gradient(180deg, #336589 0%, #5545B9 100%)" sx={{ flex: 2, p: 1, borderRadius: 2, boxShadow: 6 }}>
-          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidate.name}</Typography>
-          <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 2 }}>{candidate.role}</Typography>
+          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidateDetails?.fields?.Name}</Typography>
+          <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 2 }}>{candidateDetails?.fields?.Position} 
+           </Typography>
           <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <PhoneIcon sx={{ fontSize: 20, mr: 1 }} /> {candidate.phone}
+            <PhoneIcon sx={{ fontSize: 20, mr: 1 }} /> {candidateDetails?.fields?.CandidatePhone} 
           </Box>
           <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <EmailIcon sx={{ fontSize: 20, mr: 1 }} /> {candidate.email}
+            <EmailIcon sx={{ fontSize: 20, mr: 1 }} /> {candidateDetails?.fields?.Email} 
+            
           </Box>
+          <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <LocationPinIcon sx={{ fontSize: 20, mr: 1 }} /> {candidateDetails?.fields?.CV_Location} 
+            
+          </Box>
+          <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <DateRangeIcon sx={{ fontSize: 20, mr: 1 }} /> {new Date(candidateDetails?.createdTime).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+})}
+
+            
+          </Box>
+          
           <Box sx={{ color: 'white', opacity: 0.85, mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <LinkedInIcon sx={{ fontSize: 20, mr: 1 }} /> {candidate.linkedin}
+          <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> {candidateDetails?.fields?.FinalScore} 
           </Box>
-          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 18, mt: 2 }}>Languages:</Typography>
-          <Typography sx={{ color: 'white', opacity: 0.7, fontWeight: 400, fontSize: 16 }}>{candidate.languages.join(', ')}</Typography>
+          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 18, mt: 2 }}>Role Fit: {candidateDetails?.fields?.RoleFit} </Typography>
+          {/* <Typography sx={{ color: 'white', opacity: 0.7, fontWeight: 400, fontSize: 16 }}></Typography> */}
           <Chip label={candidate.score} sx={{ position: 'absolute', top: 24, right: 24, background: '#23234f', color: 'white', fontWeight: 700, fontSize: 16, borderRadius: 2 }} />
         </GradientCard>
         <GradientCard gradient="linear-gradient(90deg, #336589 0%, #5545B9 100%)" sx={{ flex: 1, p: 1, borderRadius: 2, boxShadow: 6, position: 'relative' }}>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 24, mb: 1 }}>Call Insights</Typography>
-          <Chip label={candidate.callInsights.status} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+          {candidateCallDetails  ? <> <Chip label={candidate.callInsights.status} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
           <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>
-          <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> 800
+          <img src={scoreCard} style={{height:"20px",marginRight: "5px" ,verticalAlign:"middle"}}/> {candidateCallDetails?.fields?.
+final_score
+}
             </Typography>
-          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Recruiter Notes :</Typography>
+          <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Final AI Short Rationale</Typography>
           <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1, wordBreak: 'break-word', // ensures long words break into the next line
-    whiteSpace: 'normal', }}>{candidate.callInsights.notes}</Typography>
+    whiteSpace: 'normal', }}>{candidateCallDetails?.fields?.Final_short_rationale}</Typography>
           {/* <Button onClick={() => navigate(`/candidates/${candidate.id}/call-insights`)}>View More</Button> */}
              <Button
                           variant="outlined"
@@ -89,36 +169,109 @@ const CandidateDetails: React.FC = () => {
                             fontFamily: 'Montserrat',
                             '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                           }}
-                          onClick={() => navigate(`/candidates/${candidate.id}/call-insights`)}
+                          onClick={() => navigate(`/candidates/${name}/call-insights`)}
                         >
                           View More
-                        </Button>
+                        </Button></>: 
+                        <Box> <Typography sx={{ fontWeight: 300, fontSize: 18, mb: 2 }}>No Call has been intiated. To intita ecall please click on belo button</Typography>
+                         <Button
+                          variant="contained"
+                          sx={{
+                            background: 'white',
+                            color: '#3a6ea5',
+                            fontWeight: 700,
+                            borderRadius: 2,
+                            px: 2.5,
+                            py: 1,
+                            fontSize: 15,
+                            textTransform: 'none',
+                            fontFamily: 'Montserrat',
+                            '&:hover': {
+                              background: '#e3e3e3',
+                            },
+                            '&.Mui-disabled': {
+                              background: '#716F6F',
+                              color: '#535353',
+                              cursor: 'not-allowed',
+                            },
+                          }}
+                         
+                          
+                          onClick={(event) => handleIntiateCall(event,candidateDetails.id ,"Proceed" )}
+                        >
+                         
+                        
+                                        Initiate Call
+                                      </Button>
+                        </Box>
+                       
+                         }
+         
         </GradientCard>
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4  }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>AI ShortRationale
+        </Typography>
+        {candidateDetails?.fields?.ShortRationale
+
+          }
+       
       </Box>
       {/* Skills and Experience */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, mb: 4 }}>
-        <Box sx={{ flex: 2, background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6 }}>
+        <Box sx={{ flex: 2, background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6,position:"relative" }}>
           <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Technical Skills</Typography>
-          <ul style={{ margin: 0, paddingLeft: 20 }}>
+          <Chip label={`AI Score:  ${candidateDetails?.fields?.Skills}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+          {/* <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>AI Score:{candidateDetails?.fields?.Skills} </Typography> */}
+          {candidateDetails?.fields?.CV_Skills
+          }
+          {/* <ul style={{ margin: 0, paddingLeft: 20 }}>
             {candidate.techSkills.map((skill, idx) => (
               <li key={idx} style={{ marginBottom: 4 }}>{skill}</li>
             ))}
-          </ul>
+          </ul> */}
         </Box>
         <Box sx={{ flex: 1, background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Soft Skills</Typography>
-          <ul style={{ margin: 0, paddingLeft: 20 }}>
+          <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Links</Typography>
+          {candidateDetails?.fields?.Links
+          }
+          {/* <ul style={{ margin: 0, paddingLeft: 20 }}>
             {candidate.softSkills.map((skill, idx) => (
               <li key={idx} style={{ marginBottom: 4 }}>{skill}</li>
             ))}
-          </ul>
+          </ul> */}
         </Box>
       </Box>
-      <Box sx={{ background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Technical Skills</Typography>
-        {candidate.experience.map((exp, idx) => (
-          <Typography key={idx} sx={{ fontSize: 15, mb: 1 }}>{exp}</Typography>
-        ))}
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Experience</Typography>
+        <Chip label={`AI Score:  ${candidateDetails?.fields?.
+Experience
+}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+
+        {candidateDetails?.fields?.CV_Experience
+          }
+       
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4,mt:'30px', color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Certificate</Typography>
+        <Chip label={`AI Score:  ${candidateDetails?.fields?.Certificates}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+
+        {candidateDetails?.fields?.
+CV_Certificates
+
+          }
+      
+      </Box>
+      <Box sx={{ background: '#232323', borderRadius: 4, p: 4,mt:'30px', color: 'white', boxShadow: 6, position:"relative" }}>
+        <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Education</Typography>
+        <Chip label={`AI Score:  ${candidateDetails?.fields?.Education}`} sx={{ position: 'absolute', top: 24, right: 24, background: "linear-gradient(180deg, #336589 0%, #5545B9 100%)", color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+
+        {candidateDetails?.fields?.
+CV_Education
+
+
+          }
+      
       </Box>
     </Box>
   );

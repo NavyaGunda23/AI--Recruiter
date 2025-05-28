@@ -64,7 +64,11 @@ const LoginForm: React.FC = () => {
       <img src={bg} style={{position:"absolute",backgroundSize:"contain",width:"100%",height:"100%"}}/>
       <Grid container sx={{ height: '100vh', width: '100vw',justifyContent:"space-around" }}>
         {/* Left: Login Form */}
-        <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', background: 'transparent' }}>
+        <Grid 
+        item 
+        xs={12} 
+        md={6} 
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', background: 'transparent' }}>
           <Box sx={{ width: '100%', maxWidth: 420, px: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Avatar src={aiAvatar} sx={{ width: 160, height: 160, mb: 6, borderRadius:0, bgcolor: 'transparent' }} />
             <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>

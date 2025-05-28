@@ -8,7 +8,7 @@ import LoadingDots from '@/components/LoadingDots';
 const Dashboard = React.lazy(() => import('@/features/dashboard/Dashboard'));
 const JobList = React.lazy(() => import('@/features/jobs/JobList'));
 const JobCreate = React.lazy(() => import('@/features/jobs/JobCreate'));
-const CandidatePortal = React.lazy(() => import('@/features/candidates/CandidatePortal'));
+// const CandidatePortal = React.lazy(() => import('@/features/candidates/CandidatePortal'));
 const JobDetails = React.lazy(() => import('@/features/jobs/JobDetails'));
 
 const CandidateDetails = React.lazy(() => import('@/features/candidates/CandidateDetails'));
@@ -35,8 +35,8 @@ const AppRoutes: React.FC = () => (
             {/* Add JobDetails here later */}
           </Route>
           <Route path="candidates">
-  <Route index element={<CandidatePortal />} />
-  <Route path=":id" element={<CandidateDetails />} />
+  {/* <Route index element={<CandidatePortal />} /> */}
+  <Route path=":name" element={<CandidateDetails />} />
   <Route path=":id/call-insights" element={<CallInsightView />} />
 </Route>
         </Route>

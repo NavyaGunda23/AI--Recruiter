@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import GradientCard from '@/components/GradientCard';
@@ -8,6 +8,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
+import { useAirtableContext } from '@/context/AirtableContext';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 
 // Mock data for call insights
 const mockInsights = [
@@ -34,6 +36,43 @@ const candidate = {
 
 const CallInsightView: React.FC = () => {
   const { id } = useParams();
+   const {
+        screeningRecords, phoneCallRecords
+      } = useAirtableContext();
+    const [ candidateCallDetails, setCandatdatCalleDetails] = useState<any>()
+
+    const [ questionEntries, setQuestionEntires] = useState<any>()
+    useEffect(() => {
+      console.log("phoneCallDetails", phoneCallRecords, id);
+      const phoneCallDetails = phoneCallRecords.filter((state) => state?.fields?.CandidateFileName == id);
+      console.log("phoneCallDetails", {...phoneCallDetails[0]});
+      const data:any = {...phoneCallDetails[0]};
+      if(data?.fields){
+        const fields = data?.fields || {};
+
+        const questionEntriesData = Object.entries(fields)
+          .filter(([key]) => key.endsWith('_Question'))
+          .map(([key, questionValue]) => {
+            const baseKey = key.replace('_Question', '');
+            return {
+              question: questionValue,
+              answer: fields[`${baseKey}_Answer`] || '',
+              score: fields[`${baseKey}_Score`] ?? null,
+            };
+          });
+        
+        console.log(questionEntriesData);
+        // console.log("questionEntriesData",questionEntriesData)
+        setQuestionEntires(questionEntriesData)
+      }
+   
+      setCandatdatCalleDetails(data);
+    }, [phoneCallRecords, id]); // ✅ removed candidateCallDetails
+    
+    // useEffect(() => {
+
+    // },[candidateCallDetails])
+
 
   // In real app, fetch insights from Airtable by candidate id
 
@@ -43,19 +82,35 @@ const CallInsightView: React.FC = () => {
     <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
       {/* Candidate Info Card */}
       <GradientCard gradient="linear-gradient(135deg, #395A84 0%, #4C277F 100%)" sx={{ p: 4, borderRadius: 4, boxShadow: 6, mb: 4, position: 'relative' }}>
-        <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidate.name}</Typography>
-        <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 2 }}>{candidate.role}</Typography>
+        <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidateCallDetails?.fields?.Name}</Typography>
+        <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 2 }}>{candidateCallDetails?.fields?.Position}</Typography>
         <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <PhoneIcon sx={{ fontSize: 20 }} /> {candidate.phone}
+          <PhoneIcon sx={{ fontSize: 20 }} /> {candidateCallDetails?.fields?.CandidatePhone
+          }
         </Box>
-        <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <DateRangeIcon sx={{ fontSize: 20, mr: 1 }} /> {new Date(candidateCallDetails?.fields?.CreationDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+})}
+
+            
+          </Box>
+        {/* <Box sx={{ color: 'white', opacity: 0.85, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
           <EmailIcon sx={{ fontSize: 20 }} /> {candidate.email}
-        </Box>
+        </Box> */}
        
-        <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>Score: {candidate.score}</Typography>
+        <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>Score: {candidateCallDetails?.fields?.final_score}</Typography>
+        <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>AI Short Rationale :</Typography>
+        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidateCallDetails?.fields?.
+Final_short_rationale
+}</Typography>
         <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 16, mt: 2 }}>Recruiter Notes :</Typography>
-        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidate.callInsights.notes}</Typography>
-        <Chip label="Call Finished" sx={{ position: 'absolute', top: 24, right: 24, background: '#177E00', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15, mt: 1 }}>{candidateCallDetails?.fields?.
+RecruiterNotes
+}</Typography>
+        <Chip label={candidateCallDetails?.fields?.CallStatus}sx={{ position: 'absolute', top: 24, right: 24, background: '#177E00', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
       </GradientCard>
 
       {/* Call Insights Table */}
@@ -69,14 +124,14 @@ const CallInsightView: React.FC = () => {
               <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
                 Answers <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
               </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
+              {/* <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
                 Comments <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-              </TableCell>
+              </TableCell> */}
               <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>SCORE</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockInsights.map((row, idx) => (
+            {questionEntries?.map((row:any, idx:any) => (
               <TableRow key={idx}>
                 <TableCell sx={{ color: 'white', opacity: 0.85 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -94,20 +149,20 @@ const CallInsightView: React.FC = () => {
                     </Tooltip>
                   </Box>
                 </TableCell>
-                <TableCell sx={{ color: 'white', opacity: 0.85 }}>
+                {/* <TableCell sx={{ color: 'white', opacity: 0.85 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {row.comments}
                     <Tooltip title={row.comments}>
                       <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
                     </Tooltip>
                   </Box>
-                </TableCell>
+                </TableCell> */}
                 <TableCell sx={{ color: 'white', opacity: 0.85 }}>{row.score}</TableCell>
               </TableRow>
             ))}
             <TableRow>
               <TableCell colSpan={3} sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>TOTAL SCORE</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>{totalScore}</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>{candidateCallDetails?.fields?.final_score}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -116,7 +171,9 @@ const CallInsightView: React.FC = () => {
       {/* Candidate Notes */}
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
         <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>Candidate Notes :</Typography>
-        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15 }}>{candidate.candidateNotes}</Typography>
+        <Typography sx={{ color: 'white', opacity: 0.85, fontWeight: 400, fontSize: 15 }}>{candidateCallDetails?.fields?.CandidateNotes
+
+          }</Typography>
       </Box>
 
       {/* Approve Button */}
