@@ -116,6 +116,11 @@ const JobDetails: React.FC = () => {
       // setError(err?.message);
     }
   };
+  
+  //from drive
+  const [candiateDetailsDrive, setCandatdateDetails] = useState<any>([])
+  const [rejectedCandidateDetails, setRejectedCandidateDetails] = useState<any>([]);
+  const [ candidateStatusModi, setCandidateModi] = useState<any>()
 
   const handleIntiateCall = (event:any,airtable_id:any,canidateStatus:any) =>{
     event?.stopPropagation()
@@ -146,14 +151,14 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
+  setCandidateModi(true)
+ 
+
   }
 
 
  
 
-  //from drive
-  const [candiateDetailsDrive, setCandatdateDetails] = useState<any>([])
-  const [rejectedCandidateDetails, setRejectedCandidateDetails] = useState([]);
 
   const fetchFiles = async (oneDriveFolderID:any) => {
     try {
@@ -240,7 +245,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
     });
   
     console.log("state details", screeningRecords);
-  }, [screeningRecords, candiateDetailsDrive]);
+  }, [screeningRecords, candiateDetailsDrive,candidateStatusModi]);
   
 
 
