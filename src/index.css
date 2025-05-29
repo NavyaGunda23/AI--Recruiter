@@ -62,3 +62,23 @@ button:focus-visible {
 .MuiMenu-list{
   padding: 0px !important;
 }
+.loader {
+  width: 180px; /* control the size */
+  aspect-ratio: 8/5;
+  --_g: no-repeat radial-gradient(#b73535 68%,#d01c1c00 71%);
+  -webkit-mask: var(--_g),var(--_g),var(--_g);
+  -webkit-mask-size: 25% 40%;
+  background: rgb(35, 186, 220);
+  animation: load 2s infinite;
+}
+
+@keyframes load {
+  0%    {-webkit-mask-position: 0% 0%  ,50% 0%  ,100% 0%  }
+  16.67%{-webkit-mask-position: 0% 100%,50% 0%  ,100% 0%  }
+  33.33%{-webkit-mask-position: 0% 100%,50% 100%,100% 0%  }
+  50%   {-webkit-mask-position: 0% 100%,50% 100%,100% 100%}
+  66.67%{-webkit-mask-position: 0% 0%  ,50% 100%,100% 100%}
+  83.33%{-webkit-mask-position: 0% 0%  ,50% 0%  ,100% 100%}
+  100%  {-webkit-mask-position: 0% 0%  ,50% 0%  ,100% 0%  }
+}
+

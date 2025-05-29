@@ -322,7 +322,7 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
     console.log("state details", screeningRecords);
   }, [screeningRecords, candiateDetailsDrive, candidateStatusModi]);
 
-
+const [ showLoadingDots, setShowLoadingDots] = useState(false)
 
   useEffect(() => {
     fetchRecords();
@@ -333,6 +333,8 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
   const [tab, setTab] = React.useState(0);
   const navigate = useNavigate();
   return (
+    <Box sx={{position:"relative", minHeight: '100vh'}}>
+    {/* {showLoadingDots ? <LoadingDots /> :  */}
     <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
       {/* <AirtableListener /> */}
       <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 24, mb: 2 }}>
@@ -632,6 +634,8 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
         ))}
       </Box>
       </>} 
+    </Box>
+    {/* } */}
     </Box>
   );
 };
