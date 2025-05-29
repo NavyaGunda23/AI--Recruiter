@@ -224,7 +224,7 @@ const JobDetails: React.FC = () => {
   
 
 
-
+const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
   const fetchFiles = async (oneDriveFolderID: any) => {
     try {
       //https://innova-recruiter-candidate.darkube.app
@@ -236,6 +236,8 @@ const JobDetails: React.FC = () => {
       }));
 
       setCandatdateDetails(jobs)
+      console.log("fetchFiles",jobs)
+      setOneDriveFiles(jobs)
       console.log("res", res)
     } catch (err) {
       console.error(err);
@@ -392,6 +394,13 @@ const JobDetails: React.FC = () => {
 
 
       </Box>
+
+
+      {originalDriveFiles.length == 0 ? 
+      <>
+      <Box sx={{background:'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',display:"flex",alignItems:"center",justifyContent:"center", width:"100%", height:"300px",px:2,py:2,borderRadius:6,color:"white",}}>No Candidate Applied this job</Box>
+      </>: 
+      <>
       <Tabs
         value={tab}
         onChange={(_, v) => setTab(v)}
@@ -401,7 +410,6 @@ const JobDetails: React.FC = () => {
         <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Selected</span>} sx={{ minWidth: 120 }} />
         <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
-      {/* {candiateDetailsDrive.length == 0 && <Box sx={{background:'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',display:"flex",alignItems:"center",justifyContent:"center", width:"100%", height:"300px",px:2,py:2,borderRadius:6,color:"white",}}>No Candidate Applied this job</Box>} */}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
        
         {(tab === 0 ? candiateDetailsDrive : rejectedCandidateDetails).map((candidate: any) => (
@@ -623,6 +631,7 @@ const JobDetails: React.FC = () => {
           </GradientCard>
         ))}
       </Box>
+      </>} 
     </Box>
   );
 };
