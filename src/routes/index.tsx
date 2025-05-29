@@ -13,9 +13,13 @@ const JobDetails = React.lazy(() => import('@/features/jobs/JobDetails'));
 
 const CandidateDetails = React.lazy(() => import('@/features/candidates/CandidateDetails'));
 const CallInsightView = React.lazy(() => import('@/features/candidates/CallInsightView'));
+import { SuccessProvider } from '@/context/InfoToastContext';
+import SuccessToastComponent from '@/components/InfoToastComponent';
+
 
 const AppRoutes: React.FC = () => (
   <BrowserRouter>
+  <SuccessProvider>
     <React.Suspense fallback={<LoadingDots />}>
       <Routes>
         <Route path="/login" element={<LoginForm />} />
@@ -44,6 +48,8 @@ const AppRoutes: React.FC = () => (
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </React.Suspense>
+    <SuccessToastComponent />
+    </SuccessProvider>
   </BrowserRouter>
 );
 

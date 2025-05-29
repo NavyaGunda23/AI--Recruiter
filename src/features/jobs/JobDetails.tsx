@@ -11,9 +11,13 @@ import { useAirtableContext } from '@/context/AirtableContext';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Modal from '@mui/material/Modal';
-
+import { useSuccess } from '@/context/InfoToastContext';
 
 const JobDetails: React.FC = () => {
+  const { showSuccessToast } = useSuccess();
+
+
+
   // const { state } = useAirtableContext();
   const {
     screeningRecords,

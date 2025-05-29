@@ -3,7 +3,7 @@ import { Box, Typography, Button, Chip } from '@mui/material';
 import GradientCard from '@/components/GradientCard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
-
+import { useSuccess } from '@/context/InfoToastContext';
 
 type Job = {
   id: string;
@@ -13,6 +13,7 @@ type Job = {
   type: string;
 };
 const JobList: React.FC = () => {
+    const { showSuccessToast } = useSuccess();
   const navigate = useNavigate();
 
 
@@ -75,7 +76,7 @@ const JobList: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to trigger webhook');
         }
-  
+        showSuccessToast("Process for Screening has started in the background. \n Time to finsih the screening is depends on Number candaidate applied.")
         console.log('Webhook triggered successfully');
       } catch (error) {
         console.error('Error triggering webhook:', error);
