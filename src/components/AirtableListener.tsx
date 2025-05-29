@@ -56,7 +56,7 @@ const AirtableListener: React.FC = () => {
         // 'ws://innovasense-recruiter-ws.darkube.app:80'
 
         window.location.protocol === 'https:'
-          ? 'ws://innovasense-recruiter-ws.darkube.app:80' 
+          ? 'wss://innovasense-recruiter-ws.darkube.app:80' 
         //   'wss://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
           : 'ws://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
       );
