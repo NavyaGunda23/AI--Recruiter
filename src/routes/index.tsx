@@ -27,6 +27,7 @@ const AppRoutes: React.FC = () => (
             </ProtectedRoute>
           }
         >
+             <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="jobs">
             <Route path="list" element={<JobList />} />
