@@ -116,41 +116,96 @@ const JobDetails: React.FC = () => {
     setActiveCandidateId(null);
   };
 
+  // const handleIntiateCall = (event: any, airtable_id: any, canidateStatus: any) => {
+  //   event?.stopPropagation()
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
+  //   myHeaders.append("Content-Type", "application/json");
+  //   myHeaders.append("Cookie", "brw=brwiMeamMoDgk2PG7; brwConsent=opt-in; AWSALBTG=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=; AWSALBTGCORS=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=");
+
+  //   const raw = JSON.stringify({
+  //     "records": [
+  //       {
+  //         "id": airtable_id,
+  //         "fields": {
+  //           "RecruiterApproval": canidateStatus
+  //         }
+  //       }
+  //     ]
+  //   });
+
+  //   const requestOptions: any = {
+  //     method: "PATCH",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow"
+  //   };
+
+  //   fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", requestOptions)
+  //     .then((response) => response.text())
+  //     .then((result) => console.log(result))
+  //     .catch((error) => console.error(error));
+  //   setCandidateModi(true)
+
+
+  // }
+
   const handleIntiateCall = (event: any, airtable_id: any, canidateStatus: any) => {
-    event?.stopPropagation()
+    event?.stopPropagation();
+  
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Cookie", "brw=brwiMeamMoDgk2PG7; brwConsent=opt-in; AWSALBTG=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=; AWSALBTGCORS=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=");
-
+  
     const raw = JSON.stringify({
-      "records": [
+      records: [
         {
-          "id": airtable_id,
-          "fields": {
-            "RecruiterApproval": canidateStatus
-          }
-        }
-      ]
+          id: airtable_id,
+          fields: {
+            RecruiterApproval: canidateStatus,
+          },
+        },
+      ],
     });
-
+  
     const requestOptions: any = {
       method: "PATCH",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
-
+  
     fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((response) => response.json())
+      .then(() => {
+        // Find the candidate from either list
+        const candidate =
+          candiateDetailsDrive.find((c: any) => c.airtable_id === airtable_id) ||
+          rejectedCandidateDetails.find((c: any) => c.airtable_id === airtable_id);
+  
+        if (!candidate) return;
+  
+        const updatedCandidate = { ...candidate, RecruiterApproval: canidateStatus };
+  
+        // Update lists based on action
+        if (canidateStatus === "Reject") {
+          setCandatdateDetails((prev: any[]) =>
+            prev.filter((c) => c.airtable_id !== airtable_id)
+          );
+          setRejectedCandidateDetails((prev: any[]) => [...prev, updatedCandidate]);
+        } else if (canidateStatus === "On Hold" || canidateStatus === "Proceed") {
+          setRejectedCandidateDetails((prev: any[]) =>
+            prev.filter((c) => c.airtable_id !== airtable_id)
+          );
+          setCandatdateDetails((prev: any[]) => [...prev, updatedCandidate]);
+        }
+  
+        // Optionally update candidateStatusModi if still needed for other effects
+        setCandidateModi(true);
+      })
       .catch((error) => console.error(error));
-    setCandidateModi(true)
-
-
-  }
-
-
+  };
+  
 
 
 
@@ -327,7 +382,7 @@ const JobDetails: React.FC = () => {
         <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Selected</span>} sx={{ minWidth: 120 }} />
         <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
-      {candiateDetailsDrive.length == 0 && <Box sx={{background:'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',display:"flex",alignItems:"center",justifyContent:"center", width:"100%", height:"300px",px:2,py:2,borderRadius:6,color:"white",}}>No Candidate Applied this job</Box>}
+      {/* {candiateDetailsDrive.length == 0 && <Box sx={{background:'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',display:"flex",alignItems:"center",justifyContent:"center", width:"100%", height:"300px",px:2,py:2,borderRadius:6,color:"white",}}>No Candidate Applied this job</Box>} */}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
        
         {(tab === 0 ? candiateDetailsDrive : rejectedCandidateDetails).map((candidate: any) => (
@@ -342,7 +397,7 @@ const JobDetails: React.FC = () => {
                 <PersonIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.canidateName ? candidate.canidateName : candidate.name}
               </Typography>
               <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 14, mb: 1 }}>
-                <FilePresentIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} />{candidate.name}
+                <FilePresentIcon sx={{ fontSize: 18, mr: 1, mb: -0.5 }} /><a href={candidate.weburl} target='_blank' style={{color:"white"}}>{candidate.name}</a>
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', opacity: 0.85, mb: 1, fontSize: 15 }}>
                 <WorkOutlineIcon sx={{ fontSize: 18, mr: 1 }} />
@@ -427,7 +482,7 @@ const JobDetails: React.FC = () => {
                     Details
                   </Button>
 
-                  {candidate.canidateName && <Button
+                  <Button
                     variant="outlined"
                     sx={{
                       color: 'white',
@@ -444,7 +499,7 @@ const JobDetails: React.FC = () => {
                     onClick={(event) => handleIntiateCall(event, candidate.airtable_id, "Reject")}
                   >
                     Reject
-                  </Button>}
+                  </Button>
                   
                    
                   {candidate?.RecruiterApproval == "Proceed" ?
