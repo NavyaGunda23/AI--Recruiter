@@ -29,9 +29,9 @@ const initialValues = {
   Location: [],
   'Onsite/Remote': [],
   Language: [],
-  Salary: '12,000 AED',
-  Recruiter_Email_Address: 'SAMPLE@SAMPLE.COM',
-  Recruiter_Name: 'NAME',
+  Salary: '',
+  Recruiter_Email_Address: '',
+  Recruiter_Name: '',
   // submittedAt: '',
   // formMode: 'create' as 'create' | 'edit',
 };
