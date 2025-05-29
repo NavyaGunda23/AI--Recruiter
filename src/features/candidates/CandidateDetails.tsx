@@ -139,9 +139,9 @@ const CandidateDetails: React.FC = () => {
           {/* <Typography sx={{ color: 'white', opacity: 0.7, fontWeight: 400, fontSize: 16 }}></Typography> */}
           <Chip label={candidate.score} sx={{ position: 'absolute', top: 24, right: 24, background: '#23234f', color: 'white', fontWeight: 700, fontSize: 16, borderRadius: 2 }} />
         </GradientCard>
-        <GradientCard gradient="linear-gradient(90deg, #336589 0%, #5545B9 100%)" sx={{ flex: 1, p: 1, borderRadius: 2, boxShadow: 6, position: 'relative' }}>
+        <GradientCard gradient="linear-gradient(210deg, #336589 0%, #4C247E 100%)" sx={{ flex: 1, p: 1, borderRadius: 2, boxShadow: 6, position: 'relative' }}>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 24, mb: 1 }}>Call Insights</Typography>
-          {candidateCallDetails?.fields?.RecruiterApproval != "On Hold" ?
+          {candidateCallDetails && candidateCallDetails?.fields?.RecruiterApproval != "On Hold" ?
             <> <Chip label={candidate.callInsights.status} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
               <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>
                 <img src={scoreCard} style={{ height: "20px", marginRight: "5px", verticalAlign: "middle" }} /> {candidateCallDetails?.fields?.

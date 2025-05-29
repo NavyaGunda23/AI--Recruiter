@@ -179,26 +179,42 @@ const JobDetails: React.FC = () => {
       .then((response) => response.json())
       .then(() => {
         // Find the candidate from either list
-        const candidate =
-          candiateDetailsDrive.find((c: any) => c.airtable_id === airtable_id) ||
-          rejectedCandidateDetails.find((c: any) => c.airtable_id === airtable_id);
+        // const candidate =
+        //   candiateDetailsDrive.find((c: any) => c.airtable_id === airtable_id) ||
+        //   rejectedCandidateDetails.find((c: any) => c.airtable_id === airtable_id);
+
+          const candidate = (({ RecruiterApproval, airtable_id, canidateName, finalScore, id, name, shortInfoAI, weburl }) =>
+            ({ RecruiterApproval, airtable_id, canidateName, finalScore, id, name, shortInfoAI, weburl }))(
+              candiateDetailsDrive.find((c: any) => c.airtable_id === airtable_id) ||
+              rejectedCandidateDetails.find((c: any) => c.airtable_id === airtable_id)
+            );
+
   
         if (!candidate) return;
   
         const updatedCandidate = { ...candidate, RecruiterApproval: canidateStatus };
-  
+        let updatedSelected;
+        let updatedRejected
         // Update lists based on action
         if (canidateStatus === "Reject") {
-          setCandatdateDetails((prev: any[]) =>
-            prev.filter((c) => c.airtable_id !== airtable_id)
+         updatedSelected = candiateDetailsDrive.filter(
+            (c:any) => c.airtable_id !== airtable_id
           );
-          setRejectedCandidateDetails((prev: any[]) => [...prev, updatedCandidate]);
+          updatedRejected = [...rejectedCandidateDetails, updatedCandidate];
+        
+         
         } else if (canidateStatus === "On Hold" || canidateStatus === "Proceed") {
-          setRejectedCandidateDetails((prev: any[]) =>
-            prev.filter((c) => c.airtable_id !== airtable_id)
+          updatedRejected = rejectedCandidateDetails.filter(
+            (c:any) => c.airtable_id !== airtable_id
           );
-          setCandatdateDetails((prev: any[]) => [...prev, updatedCandidate]);
+          updatedSelected = [...candiateDetailsDrive.filter(
+            (c:any) => c.airtable_id !== airtable_id
+          ), updatedCandidate];
+        
+        
         }
+        setCandatdateDetails(updatedSelected);
+        setRejectedCandidateDetails(updatedRejected);
   
         // Optionally update candidateStatusModi if still needed for other effects
         setCandidateModi(true);
@@ -246,6 +262,7 @@ const JobDetails: React.FC = () => {
       const status = record.fields?.RecruiterApproval;
       const shortInfoAI = record.fields?.ShortRationale;
       const canidateName = record.fields?.Name;
+      const ondeRdiveId = candiateDetailsDrive.filter((drive:any) => drive?.name == record.fields?.CandidateFileName)[0]?.id
       if (!name) return;
 
       if (status === "Reject") {
@@ -255,8 +272,10 @@ const JobDetails: React.FC = () => {
           finalScore: finalScore ?? null,
           airtable_id: record.id,
           RecruiterApproval: status,
+          canidateName:canidateName,
           shortInfoAI: shortInfoAI,
-          ...record.fields
+          id:ondeRdiveId
+          // ...record.fields
         });
         return;
       }
@@ -481,8 +500,7 @@ const JobDetails: React.FC = () => {
                   >
                     Details
                   </Button>
-
-                  <Button
+                    {screeningRecords?.length>0  && <Button
                     variant="outlined"
                     sx={{
                       color: 'white',
@@ -499,7 +517,8 @@ const JobDetails: React.FC = () => {
                     onClick={(event) => handleIntiateCall(event, candidate.airtable_id, "Reject")}
                   >
                     Reject
-                  </Button>
+                  </Button>}
+                  
                   
                    
                   {candidate?.RecruiterApproval == "Proceed" ?
