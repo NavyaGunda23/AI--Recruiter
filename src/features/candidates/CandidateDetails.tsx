@@ -107,7 +107,7 @@ const CandidateDetails: React.FC = () => {
 
 
   return (
-    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
       {/* Top Row: Candidate Info and Call Insights */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, mb: 4 }}>
         <GradientCard gradient="linear-gradient(180deg, #336589 0%, #5545B9 100%)" sx={{ flex: 2, p: 1, borderRadius: 2, boxShadow: 6 }}>
@@ -164,7 +164,7 @@ const CandidateDetails: React.FC = () => {
                   mt: 4,
                   fontSize: 15,
                   textTransform: 'none',
-                  fontFamily: 'Montserrat',
+                
                   '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                 }}
                 onClick={() => navigate(`/candidates/${name}/call-insights`)}
@@ -185,7 +185,7 @@ const CandidateDetails: React.FC = () => {
                   py: 1,
                   fontSize: 15,
                   textTransform: 'none',
-                  fontFamily: 'Montserrat',
+                  
                   '&:hover': {
                     background: '#e3e3e3',
                   },

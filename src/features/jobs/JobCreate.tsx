@@ -84,8 +84,8 @@ const JobCreate: React.FC = () => {
 
 
   return (
-    <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
-      <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 4, fontFamily: 'Montserrat' }}>
+    <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
+      <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 4, }}>
         Create a New job
       </Typography>
       <Formik
@@ -146,7 +146,7 @@ const JobCreate: React.FC = () => {
               gap: 4,
             }}>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Job Position</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1,}}>Job Position</Typography>
                 <Field name="Position">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -171,7 +171,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Expereince</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, }}>Expereince</Typography>
                 <Field name="Experience">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -191,19 +191,19 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Location</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1,  }}>Location</Typography>
                 <Select
                   multiple
                   value={values.Location}
                   onChange={(event: SelectChangeEvent<string[]>) => setFieldValue('Location', event.target.value)}
-                  input={<OutlinedInput sx={{ color: 'white', fontFamily: 'Montserrat' }} />}
+                  input={<OutlinedInput sx={{ color: 'white',  }} />}
                   renderValue={(selected: string[]) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map((value) => (
                         <Chip
                           key={value}
                           label={value}
-                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600, fontFamily: 'Montserrat' }}
+                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600,  }}
                           onDelete={(event) => {
                             event.stopPropagation();
                             const newSelected = values.Location.filter((item: string) => item !== value);
@@ -228,19 +228,19 @@ const JobCreate: React.FC = () => {
                 </Select>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Onsite/Remote</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, }}>Onsite/Remote</Typography>
                 <Select
                   multiple
                   value={values['Onsite/Remote']}
                   onChange={(event: SelectChangeEvent<string[]>) => setFieldValue('Onsite/Remote', event.target.value)}
-                  input={<OutlinedInput sx={{ color: 'white', fontFamily: 'Montserrat' }} />}
+                  input={<OutlinedInput sx={{ color: 'white',  }} />}
                   renderValue={(selected: string[]) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map((value) => (
                         <Chip
                           key={value}
                           label={value}
-                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600, fontFamily: 'Montserrat' }}
+                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600,  }}
                           onDelete={(event) => {
                             event.stopPropagation();
                             const newSelected = values['Onsite/Remote'].filter((item: string) => item !== value);
@@ -263,19 +263,19 @@ const JobCreate: React.FC = () => {
                 </Select>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Language</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, }}>Language</Typography>
                 <Select
                   multiple
                   value={values.Language}
                   onChange={(event: SelectChangeEvent<string[]>) => setFieldValue('Language', event.target.value)}
-                  input={<OutlinedInput sx={{ color: 'white', fontFamily: 'Montserrat' }} />}
+                  input={<OutlinedInput sx={{ color: 'white', }} />}
                   renderValue={(selected: string[]) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map((value) => (
                         <Chip
                           key={value}
                           label={value}
-                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600, fontFamily: 'Montserrat' }}
+                          sx={{ background: '#a084e8', color: 'white', fontWeight: 600, }}
                           onDelete={(event) => {
                             event.stopPropagation();
                             const newSelected = values.Language.filter((item: string) => item !== value);
@@ -298,7 +298,7 @@ const JobCreate: React.FC = () => {
                 </Select>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Recruiter Email Address</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1,  }}>Recruiter Email Address</Typography>
                 <Field name="Recruiter_Email_Address">
                   {({ field, meta }: FieldProps) => (
                      <MuiTextField
@@ -318,7 +318,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight:300, mb: 1, fontFamily: 'Montserrat' }}>Salary</Typography>
+                <Typography sx={{ color: 'white', fontWeight:300, mb: 1, }}>Salary</Typography>
                 <Field name="Salary">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -338,7 +338,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Recruter Name</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1,  }}>Recruter Name</Typography>
                 <Field name="Recruiter_Name">
                   {({ field, meta }: FieldProps) => (
                     <MuiTextField
@@ -358,7 +358,7 @@ const JobCreate: React.FC = () => {
                 </Field>
               </Box>
               <Box sx={{ gridColumn: '1 / -1' }}>
-                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1, fontFamily: 'Montserrat' }}>Job Description</Typography>
+                <Typography sx={{ color: 'white', fontWeight: 300, mb: 1,}}>Job Description</Typography>
                 <Field name="Job_Description">
                    {({ field, meta }: FieldProps) => (
                      <MuiTextField
@@ -391,7 +391,7 @@ const JobCreate: React.FC = () => {
                     py: 1.2,
                     fontSize: 16,
                     textTransform: 'none',
-                    fontFamily: 'Montserrat',
+                   
                     '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                   }}
                   onClick={() => navigate('/jobs/list')}
@@ -411,7 +411,7 @@ const JobCreate: React.FC = () => {
                     py: 1.2,
                     fontSize: 16,
                     textTransform: 'none',
-                    fontFamily: 'Montserrat',
+                   
                     boxShadow: 2,
                     '&:hover': { background: 'linear-gradient(90deg, #6B73FF 0%, #3a6ea5 100%)' },
                   }}

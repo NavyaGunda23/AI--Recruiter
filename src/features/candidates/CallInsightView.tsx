@@ -81,7 +81,7 @@ const CallInsightView: React.FC = () => {
   const totalScore = mockInsights.reduce((sum, row) => sum + row.score, 0);
 
   return (
-    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 },  }}>
       {/* Candidate Info Card */}
       <GradientCard gradient="linear-gradient(135deg, #395A84 0%, #4C277F 100%)" sx={{ p: 4, borderRadius: 4, boxShadow: 6, mb: 4, position: 'relative' }}>
         <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidateCallDetails?.fields?.Name}</Typography>
@@ -121,7 +121,7 @@ RecruiterNotes
             py: 1,
             fontSize: 18,
             textTransform: 'none',
-            fontFamily: 'Montserrat',
+          
             position: 'absolute', top: 74, right: 24,
             boxShadow: 2,
             '&:hover': { background: '#385F8D', },
@@ -145,7 +145,7 @@ Final_short_rationale
       </Box>
       {/* Call Insights Table */}
       {/* <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
-        <Table sx={{ '& .MuiTableCell-root': { borderBottomColor: '#3a3a3a', fontFamily: 'Montserrat' } }}>
+        <Table sx={{ '& .MuiTableCell-root': { borderBottomColor: '#3a3a3a', } }}>
           <TableHead>
             <TableRow>
               <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
@@ -189,7 +189,7 @@ Final_short_rationale
         </Table>
       </Box> */}
       <Typography sx={{fontSize:"20px",color:"white",mb:2}}>Question Details:</Typography>
-      <Box sx={{ fontFamily: 'Montserrat' }}>
+      <Box >
       {questionEntries?.map((row: any, idx: number) => (
         <Accordion key={idx} sx={{ backgroundColor: '#261F53', color: 'white', boxShadow: 6, mb: 2, borderRadius: 1, p: 0, }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>

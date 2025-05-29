@@ -88,7 +88,7 @@ const JobList: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 },  }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
     
         <Typography sx={{ color: 'white', fontWeight: 600, fontSize: 28 }}>
@@ -106,7 +106,7 @@ const JobList: React.FC = () => {
             fontSize: 16,
             textTransform: 'none',
           
-            fontFamily: 'Montserrat',
+           
             '&:hover': { background: 'linear-gradient(90deg, #6B73FF 0%, #3a6ea5 100%)' },
           }}
           onClick={() => navigate('/jobs/create')}
@@ -146,7 +146,7 @@ const JobList: React.FC = () => {
                 py: 1,
                 fontSize: 15,
                 textTransform: 'none',
-                fontFamily: 'Montserrat',
+                
                 mt: 2,
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
@@ -166,7 +166,7 @@ const JobList: React.FC = () => {
                 py: 1,
                 fontSize: 15,
                 textTransform: 'none',
-                fontFamily: 'Montserrat',
+               
                 mt: 2,
                 ml: 2,
                 width:"fit-content",

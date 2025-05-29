@@ -69,7 +69,7 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   };
 
   const drawer = (
-    <Box sx={{ background: '#1F2039', height: '100%', color: 'white', fontFamily: `'Montserrat', sans-serif`,width:"90%" }}>
+    <Box sx={{ background: '#1F2039', height: '100%', color: 'white',width:"90%" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', p: 3, justifyContent: 'flex-start' }}>
         {/* Company Logo and Name */}
         <img src={Innovasenslogo} alt="Innovasense Logo" style={{  height: 20, marginRight: 10 }} />

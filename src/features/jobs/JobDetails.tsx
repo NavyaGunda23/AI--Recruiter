@@ -335,7 +335,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
   return (
     <Box sx={{position:"relative", minHeight: '100vh'}}>
     {/* {showLoadingDots ? <LoadingDots /> :  */}
-    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 }, fontFamily: `'Montserrat', sans-serif` }}>
+    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
       {/* <AirtableListener /> */}
       <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 24, mb: 2 }}>
         <a href='/jobs/list' style={{ color: "white" }}>Jobs</a>  <span style={{ color: '#a084e8', fontWeight: 400 }}>/ {jobDetails.title}</span>
@@ -503,7 +503,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
                       py: 1,
                       fontSize: 15,
                       textTransform: 'none',
-                      fontFamily: 'Montserrat',
+                     
                       '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                     }}
                     onClick={(event) => (event.stopPropagation(), navigate(`/candidates/${candidate.name}`))}
@@ -521,7 +521,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
                       py: 1,
                       fontSize: 15,
                       textTransform: 'none',
-                      fontFamily: 'Montserrat',
+                     
                       '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
                     }}
                     onClick={(event) => handleIntiateCall(event, candidate.airtable_id, "Reject")}
@@ -543,7 +543,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
                         py: 1,
                         fontSize: 15,
                         textTransform: 'none',
-                        fontFamily: 'Montserrat',
+                     
                         '&:hover': {
                           background: '#e3e3e3',
                         },
@@ -575,7 +575,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
                         py: 1,
                         fontSize: 15,
                         textTransform: 'none',
-                        fontFamily: 'Montserrat',
+                       
                         '&:hover': {
                           background: '#e3e3e3',
                         },
@@ -608,7 +608,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
                     py: 1,
                     fontSize: 15,
                     textTransform: 'none',
-                    fontFamily: 'Montserrat',
+                   
                     '&:hover': {
                       background: '#e3e3e3',
                     },
