@@ -31,7 +31,7 @@ const AppRoutes: React.FC = () => (
           <Route path="jobs">
             <Route path="list" element={<JobList />} />
             <Route path="create" element={<JobCreate />} />
-            <Route path=":jobId" element={<JobDetails />} />
+            <Route path=":jobId/:jobName" element={<JobDetails />} />
             {/* Add JobDetails here later */}
           </Route>
           <Route path="candidates">

@@ -5,30 +5,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
 
 
-// Mock job data
-const jobs = [
-  {
-    id: '1',
-    title: 'Senior UI/UX Designer',
-    location: 'New Delhi, India',
-    salary: '$30,000 - $55,000',
-    type: 'FULL-TIME',
-  },
-  {
-    id: '2',
-    title: 'Senior UI/UX Designer',
-    location: 'New Delhi, India',
-    salary: '$30,000 - $55,000',
-    type: 'FULL-TIME',
-  },
-  {
-    id: '3',
-    title: 'Senior UI/UX Designer',
-    location: 'New Delhi, India',
-    salary: '$30,000 - $55,000',
-    type: 'FULL-TIME',
-  },
-];
 type Job = {
   id: string;
   title: string;
@@ -66,9 +42,9 @@ const JobList: React.FC = () => {
       const jobs = data.records.map((record:any) => ({
         id: record.id,
         title: record.fields.Position || '',
-        location: record.fields.Location || '',
+        location: record.fields.Location.join(' ') || '',
         salary: record.fields.Salary || '',
-        type: record.fields["Onsite/Remote"] || '',
+        type: record.fields["Onsite/Remote"].join(' ') || '',
       }));
   
       setRecords(jobs);
@@ -175,7 +151,7 @@ const JobList: React.FC = () => {
                 width:"fit-content",
                 '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
               }}
-              onClick={() => navigate(`/jobs/${job.id}`)}
+              onClick={() => navigate(`/jobs/${job.id}/${job.title}`)}
             >
               View CVs
             </Button>
