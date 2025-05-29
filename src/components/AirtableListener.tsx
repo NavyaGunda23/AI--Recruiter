@@ -54,11 +54,12 @@ const AirtableListener: React.FC = () => {
     const socket = new WebSocket(
 
         // 'ws://innovasense-recruiter-ws.darkube.app:80'
-
+        // 'wss://innovasense-recruiter-ws.darkube.app:80' 
+       
         window.location.protocol === 'https:'
-          ? 'wss://innovasense-recruiter-ws.darkube.app:80' 
+          ?  'wss://innovasense-ai-ws.50000words.com'
         //   'wss://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
-          : 'ws://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
+          :  'wss://innovasense-ai-ws.50000words.com'
       );
 
     socket.onopen = () => {

@@ -10,6 +10,7 @@ import AirtableListener from './WebSocket';
 import { useAirtableContext } from '@/context/AirtableContext';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
+import Modal from '@mui/material/Modal';
 
 const job = {
   title: 'Front End Developer',
@@ -122,6 +123,16 @@ const JobDetails: React.FC = () => {
   const [rejectedCandidateDetails, setRejectedCandidateDetails] = useState<any>([]);
   const [ candidateStatusModi, setCandidateModi] = useState<any>()
 
+  const [activeCandidateId, setActiveCandidateId] = useState<string | null>(null);
+
+  const handleOpen = (id: string) => {
+    setActiveCandidateId(id);
+  };
+  
+  const handleClose = () => {
+    setActiveCandidateId(null);
+  };
+
   const handleIntiateCall = (event:any,airtable_id:any,canidateStatus:any) =>{
     event?.stopPropagation()
     const myHeaders = new Headers();
@@ -187,6 +198,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
     const scoreMap: Record<string, number> = {};
     const recuiterApproval: Record<string, number> = {};
     const canidateNames: Record<string, number> = {};
+    const shortRationale: Record<string, number> = {};
     const airtableIDMap: Record<string, string> = {};
     const rejectedCandidates: any[] = [];
   
@@ -194,6 +206,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
       const name = record.fields?.CandidateFileName?.trim();
       const finalScore = record.fields?.FinalScore;
       const status = record.fields?.RecruiterApproval;
+      const shortInfoAI = record.fields?.ShortRationale      ;
       const canidateName = record.fields?.Name;
       if (!name) return;
   
@@ -204,6 +217,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
           finalScore: finalScore ?? null,
           airtable_id: record.id,
           RecruiterApproval:status,
+          shortInfoAI:shortInfoAI,
           ...record.fields
         });
         return;
@@ -213,6 +227,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
         scoreMap[name] = finalScore;
         recuiterApproval[name] = status;
         canidateNames[name] = canidateName;
+        shortRationale[name] = shortInfoAI;
       }
   
       airtableIDMap[name] = record.id;
@@ -227,6 +242,7 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
         airtable_id: airtableIDMap[candidate.name.trim()] ?? null,
         RecruiterApproval:recuiterApproval[candidate.name.trim()] ?? null,
         canidateName:canidateNames[candidate.name.trim()] ?? null,
+        shortInfoAI:shortRationale[candidate.name.trim()] ?? null,
       }));
   
     console.log("enrichedCandidates", enrichedCandidates);
@@ -309,9 +325,64 @@ fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", request
                 {/* {candidate.finalScore >= 0 ? candidate.finalScore : "NA"} */}
                 AI Score: {candidate.finalScore !== null && candidate.finalScore !== undefined
   ? candidate.finalScore
-  : "NA"} / 1000  <Tooltip title="Short rationla o AI">
-  <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-</Tooltip>
+  : "NA"} / 1000  <InfoOutlinedIcon onClick={() => handleOpen(candidate.id)} sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
+
+<Modal
+   open={activeCandidateId === candidate.id}
+  onClose={handleClose}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box sx={{
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  backgroundColor: '#bbb9c3',
+  color:"#000000",
+  px:3,
+  py:3,
+  boxShadow:6,
+ 
+  borderRadius:"20px",
+  border:"1px solid #443e6a",
+  '&:focus-within': {
+    outline: 'none',
+    boxShadow: 'none',
+  },
+  
+}}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Short AI Rationale:
+    </Typography>
+    <Typography id="modal-modal-description" sx={{ mt: 2,fontSize:"16px" , maxHeight: 400,letterSpacing:"0.5px", '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#7a5fff',
+      borderRadius: '4px',
+    },
+     // 🔹 limit modal height
+    overflowY: 'auto',}}>
+    {candidate.shortInfoAI} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+Why do we use it?
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+Why do we use it?
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+
+
+Where does it come from?
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem I
+    </Typography>
+  </Box>
+</Modal>
+
 
               </Box>
             </Box>
