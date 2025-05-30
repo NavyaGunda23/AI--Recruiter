@@ -11,14 +11,12 @@ import { useAirtableContext } from '@/context/AirtableContext';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Modal from '@mui/material/Modal';
-import { useSuccess } from '@/context/InfoToastContext';
+import { useInfo } from '@/context/InfoToastContext';
+import CandidateCVCardSkeleton from '@/components/CandidateCVSkeleton';
 
 const JobDetails: React.FC = () => {
-  const { showSuccessToast } = useSuccess();
 
 
-
-  // const { state } = useAirtableContext();
   const {
     screeningRecords,
   } = useAirtableContext();
@@ -331,7 +329,10 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
   useEffect(() => {
     fetchRecords();
     fetchAppliedCandaidates()
-
+    setShowLoadingDots(true)
+    setTimeout(() => {
+      setShowLoadingDots(false)
+    },3000)
   }, []);
 
   const [tab, setTab] = React.useState(0);
@@ -400,13 +401,19 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
 
 
       </Box>
+      {showLoadingDots ?  
 
-
-      {originalDriveFiles.length == 0 ? 
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 4 }}>
+        { Array.from({ length: 3 }).map((_, idx) => <CandidateCVCardSkeleton key={idx} />)}
+      </Box>
+     
+      :
+      originalDriveFiles.length == 0 ? 
       <>
       <Box sx={{background:'linear-gradient(90deg, #336A87 0%, #4C257E 100%)',display:"flex",alignItems:"center",justifyContent:"center", width:"100%", height:"300px",px:2,py:2,borderRadius:6,color:"white",}}>No Candidate Applied this job</Box>
       </>: 
       <>
+      
       <Tabs
         value={tab}
         onChange={(_, v) => setTab(v)}
@@ -416,8 +423,9 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
         <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Selected</span>} sx={{ minWidth: 120 }} />
         <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
+      
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
-       
+      
         {(tab === 0 ? candiateDetailsDrive : rejectedCandidateDetails).map((candidate: any) => (
           <GradientCard
             key={candidate.id}
@@ -637,7 +645,10 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
           </GradientCard>
         ))}
       </Box>
-      </>} 
+      </>
+    }
+
+      {} 
     </Box>
     {/* } */}
     </Box>

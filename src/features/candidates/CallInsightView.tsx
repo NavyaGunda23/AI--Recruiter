@@ -11,30 +11,8 @@ import Tooltip from '@mui/material/Tooltip';
 import { useAirtableContext } from '@/context/AirtableContext';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CallInsightsSkeletonView from '@/components/CallInsightsSkeletobView';
 
-
-// Mock data for call insights
-const mockInsights = [
-  { question: 'Tell me about yourself.', answer: 'I am a frontend dev...', score: 8, comments: 'Good intro.' },
-  { question: 'React experience?', answer: '5 years', score: 9, comments: 'Strong.' },
-  { question: 'Problem-solving skills?', answer: 'Solved complex issue.', score: 9, comments: 'Insightful.' },
-  { question: 'Teamwork experience?', answer: 'Collaborated on project.', score: 9, comments: 'Good example.' },
-];
-
-const candidate = {
-  id: '1',
-  name: 'Nahid Hasan',
-  role: 'UX/UI Designer',
-  phone: '+971 89 909 2134',
-  email: 'sample@sample.com',
-  linkedin: 'linkedurl.com',
-  score: 800,
-  callInsights: {
-    status: 'finished',
-    notes: 'LoremLoremLoremLorem LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem',
-  },
-  candidateNotes: 'LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem',
-};
 
 const CallInsightView: React.FC = () => {
   const { id } = useParams();
@@ -78,9 +56,20 @@ const CallInsightView: React.FC = () => {
 
   // In real app, fetch insights from Airtable by candidate id
 
-  const totalScore = mockInsights.reduce((sum, row) => sum + row.score, 0);
+
+  const [ showLoading, setShowLoaidng ] = useState(false)
+    useEffect(() =>{
+      setShowLoaidng(true)
+      setTimeout(() => {
+        setShowLoaidng(false)
+      },3000)
+    },[])
+
 
   return (
+    <>
+    {showLoading  ?  <CallInsightsSkeletonView /> :
+   
     <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 },  }}>
       {/* Candidate Info Card */}
       <GradientCard gradient="linear-gradient(135deg, #395A84 0%, #4C277F 100%)" sx={{ p: 4, borderRadius: 4, boxShadow: 6, mb: 4, position: 'relative' }}>
@@ -143,51 +132,7 @@ RecruiterNotes
 Final_short_rationale
 }</Typography>
       </Box>
-      {/* Call Insights Table */}
-      {/* <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
-        <Table sx={{ '& .MuiTableCell-root': { borderBottomColor: '#3a3a3a', } }}>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
-                QUESTIONS <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-              </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>
-                Answers <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-              </TableCell>
-              
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>SCORE</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {questionEntries?.map((row:any, idx:any) => (
-              <TableRow key={idx}>
-                <TableCell sx={{ color: 'white', opacity: 0.85 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    Question {idx+1}
-                    <Tooltip title={row.question}>
-                      <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-                    </Tooltip>
-                  </Box>
-                </TableCell>
-                <TableCell sx={{ color: 'white', opacity: 0.85 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  Answer {idx+1}
-                    <Tooltip title={row.answer}>
-                      <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, verticalAlign: 'middle' }} />
-                    </Tooltip>
-                  </Box>
-                </TableCell>
-               
-                <TableCell sx={{ color: 'white', opacity: 0.85 }}>{row.score}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell colSpan={3} sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>TOTAL SCORE</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 700, fontSize: 16 }}>{candidateCallDetails?.fields?.final_score}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Box> */}
+  
       <Typography sx={{fontSize:"20px",color:"white",mb:2}}>Question Details:</Typography>
       <Box >
       {questionEntries?.map((row: any, idx: number) => (
@@ -200,10 +145,6 @@ Final_short_rationale
             </Typography>
             <Chip label={`Score`+row.score} sx={{  background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', color: 'white', fontWeight: 400, fontSize: 12, borderRadius: 2 }} />
 
-
-            {/* <Typography sx={{ opacity: 0.85, mt: 1 }}>
-              <strong>Score:</strong> {row.score}
-            </Typography> */}
           </Box>
             
           </AccordionSummary>
@@ -243,7 +184,8 @@ Final_short_rationale
       <Box sx={{ display: 'flex', }}>
        
       </Box>
-    </Box>
+    </Box> }
+    </>
   );
 };
 

@@ -9,6 +9,7 @@ import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import type { SelectChangeEvent } from '@mui/material';
 import type { FieldProps } from 'formik';
 import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
+import { useSuccess } from '@/context/SuccessToastContext';
 
 const JobSchema = Yup.object().shape({
   Position: Yup.string().required('Required'),
@@ -81,7 +82,7 @@ const JobCreate: React.FC = () => {
   const onsiteRemote = ['Onsite', 'Remote', 'Hybrid'];
   const languages = [ 'English', 'Arabic'];
  
-
+ const { showSuccessToast } = useSuccess();
 
   return (
     <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
@@ -131,8 +132,9 @@ const JobCreate: React.FC = () => {
         }
       }
     );
-    
+    showSuccessToast("Job Created SuccessFully")
             navigate('/jobs/list');
+
           } finally {
             setSubmitting(false);
           }

@@ -1,39 +1,39 @@
 import React, { useState, useCallback, useContext, createContext } from 'react';
 import type { ReactNode } from 'react';
 
-type SuccessContextType = {
-  successMessage: string | null;
-  showSuccessToast: (message: string) => void;
-  clearSuccess: () => void;
+type InfoContextType = {
+  infoMessage: string | null;
+  showInfoToast: (message: string) => void;
+  clearInfo: () => void;
 };
 
 // Provide a default empty value with correct shape
-export const SuccessContext = createContext<SuccessContextType>({
-  successMessage: null,
-  showSuccessToast: () => {},
-  clearSuccess: () => {},
+export const InfoContext = createContext<InfoContextType>({
+  infoMessage: null,
+  showInfoToast: () => {},
+  clearInfo: () => {},
 });
 
-export const useSuccess = () => useContext(SuccessContext);
+export const useInfo = () => useContext(InfoContext);
 
 type Props = {
   children: ReactNode;
 };
 
-export const SuccessProvider = ({ children }: Props) => {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+export const InfoProvider = ({ children }: Props) => {
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
-  const showSuccessToast = useCallback((message: string) => {
-    setSuccessMessage(message);
+  const showInfoToast = useCallback((message: string) => {
+    setInfoMessage(message);
   }, []);
 
-  const clearSuccess = useCallback(() => {
-    setSuccessMessage(null);
+  const clearInfo = useCallback(() => {
+    setInfoMessage(null);
   }, []);
 
   return (
-    <SuccessContext.Provider value={{ showSuccessToast, clearSuccess, successMessage }}>
+    <InfoContext.Provider value={{ showInfoToast, clearInfo, infoMessage }}>
       {children}
-    </SuccessContext.Provider>
+    </InfoContext.Provider>
   );
 };

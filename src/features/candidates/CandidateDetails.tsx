@@ -9,41 +9,7 @@ import scoreCard from '@/assets/scoreCard.png'
 import { useAirtableContext } from '@/context/AirtableContext';
 import LocationPinIcon from '@mui/icons-material/LocationPin';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-const candidate = {
-  id: '1',
-  name: 'Nahid Hasan',
-  role: 'UX/UI Designer',
-  phone: '+971 89 909 2134',
-  email: 'sample@sample.com',
-  linkedin: 'linkedurl.com',
-  score: 800,
-  languages: ['English', 'Arabic', 'French'],
-  callInsights: {
-    score: 800,
-    status: 'finished',
-    notes: 'LoremLoremLoremLorem LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLo remLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLo remLoremLoremLorem',
-  },
-  techSkills: [
-    'AI/ML: PyTorch, TensorFlow, scikit-learn, Hugging Face Transformers, PyTorch Lightning',
-    'LLMs & GenAI: Fine-tuning (LoRA/QLoRA), RAGs, multi-agent systems, open-source LLMs, prompt engineering',
-    'MLOps & Deployment: MLflow, Airflow, Prometheus, Docker, Kubernetes, CI/CD pipelines',
-    'Software Engineering: Python (advanced), C#, C++, Dart, JavaScript, FastAPI, Django, React.js, Next.js, .NET, Flutter',
-    'Cloud Platforms: GCP Vertex AI, Azure ML Studio, Amazon SageMaker',
-  ],
-  softSkills: [
-    'Cross-functional collaboration',
-    'Agile delivery',
-    'Communication with stakeholders',
-    'Teamwork and independent work',
-    'Problem-solving',
-  ],
-  experience: [
-    'AI/ML Engineer | eData Information | June 2023 – present | Onsite | Dubai, UAE',
-    '- Designed and deployed real-time AI valuation system for vehicles, built intelligent VIN decoding system, developed multi-agent AI systems and chatbots, led AI-powered scraping/data validation platform, fine-tuned LLMs, implemented RAG systems, managed MLOps pipelines, developed scalable backend services, delivered cloud-native AI solutions, automated model deployment, and collaborated with cross-functional teams.',
-    'Software Engineer | Talal Tech | Feb 2022 – June 2023 | Remote | Medina, Saudi Arabia',
-    '- Engineered scalable backend systems and APIs, excelled in Python backend development, contributed to full-stack development with React.js/Next.js, implemented CI/CD pipelines, and designed/testing frameworks.',
-  ],
-};
+import CandidateDetailSkeleton from '@/components/CandidateDetailSkeleton';
 
 const CandidateDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -104,13 +70,22 @@ const CandidateDetails: React.FC = () => {
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
   }
-
+const [ showLoading, setShowLoaidng ] = useState(false)
+  useEffect(() =>{
+    setShowLoaidng(true)
+    setTimeout(() => {
+      setShowLoaidng(false)
+    },3000)
+  },[])
 
   return (
+    <>
+    {showLoading ?  <CandidateDetailSkeleton />  : 
+   
     <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
       {/* Top Row: Candidate Info and Call Insights */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, mb: 4 }}>
-        <GradientCard gradient="linear-gradient(180deg, #336589 0%, #5545B9 100%)" sx={{ flex: 2, p: 1, borderRadius: 2, boxShadow: 6 }}>
+        <GradientCard gradient="linear-gradient(180deg, #336589 0%, #5545B9 100%)" sx={{ position:"relative",flex: 2, p: 1, borderRadius: 2, boxShadow: 6 }}>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 28, mb: 1 }}>{candidateDetails?.fields?.Name}</Typography>
           <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 2 }}>{candidateDetails?.fields?.Position}
           </Typography>
@@ -137,12 +112,12 @@ const CandidateDetails: React.FC = () => {
           </Box>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 18, mt: 2 }}>Role Fit: {candidateDetails?.fields?.RoleFit} / 10</Typography>
           {/* <Typography sx={{ color: 'white', opacity: 0.7, fontWeight: 400, fontSize: 16 }}></Typography> */}
-          <Chip label={candidate.score} sx={{ position: 'absolute', top: 24, right: 24, background: '#23234f', color: 'white', fontWeight: 700, fontSize: 16, borderRadius: 2 }} />
+          {/* <Chip label={candidateDetails?.fields?.FinalScore} sx={{ position: 'absolute', top: 24, right: 24, background: '#23234f', color: 'white', fontWeight: 700, fontSize: 16, borderRadius: 2 }} /> */}
         </GradientCard>
         <GradientCard gradient="linear-gradient(210deg, #336589 0%, #4C247E 100%)" sx={{ flex: 1, p: 1, borderRadius: 2, boxShadow: 6, position: 'relative' }}>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 24, mb: 1 }}>Call Insights</Typography>
           {candidateCallDetails && candidateCallDetails?.fields?.RecruiterApproval != "On Hold" ?
-            <> <Chip label={candidate.callInsights.status} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+            <> <Chip label={candidateCallDetails?.fields?.RecruiterApproval} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
               <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>
                 <img src={scoreCard} style={{ height: "20px", marginRight: "5px", verticalAlign: "middle" }} /> {candidateCallDetails?.fields?.
                   final_score
@@ -309,7 +284,8 @@ const CandidateDetails: React.FC = () => {
         }
 
       </Box>
-    </Box>
+    </Box>}
+    </>
   );
 };
 

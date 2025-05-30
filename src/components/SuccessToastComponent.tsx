@@ -2,31 +2,31 @@
 import React, { useContext } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { InfoContext } from '@/context/InfoToastContext';
+import { SuccessContext } from '@/context/SuccessToastContext';
 
-const InfoToastComponent = () => {
-  const { showInfoToast, clearInfo, infoMessage } = useContext(InfoContext);
+const SuccessToastComponent = () => {
+  const { showSuccessToast, cleatSuccess, successMessage } = useContext(SuccessContext);
 
   return (
     <Snackbar
-      open={!!infoMessage}
+      open={!!successMessage}
       autoHideDuration={6000}
-      onClose={clearInfo}
+      onClose={cleatSuccess}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      <Alert onClose={clearInfo}  variant="filled" sx={{
-    backgroundColor: '#4DB0FB',      // custom background
+      <Alert onClose={cleatSuccess}  variant="filled" sx={{
+    backgroundColor: '#17B309',      // custom background
     color: 'white',                 // border
     fontWeight: 500,
     borderRadius: 2,
     width:"100%"
   }}>
-        {infoMessage}
+        {successMessage}
       </Alert>
     </Snackbar>
   );
 };
 
-export default InfoToastComponent;
+export default SuccessToastComponent;
 
 

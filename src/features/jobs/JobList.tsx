@@ -3,7 +3,8 @@ import { Box, Typography, Button, Chip } from '@mui/material';
 import GradientCard from '@/components/GradientCard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate } from 'react-router-dom';
-import { useSuccess } from '@/context/InfoToastContext';
+import { useInfo } from '@/context/InfoToastContext';
+import JobListSkeleton from '@/components/JobListSkeleton';
 
 type Job = {
   id: string;
@@ -13,7 +14,7 @@ type Job = {
   type: string;
 };
 const JobList: React.FC = () => {
-    const { showSuccessToast } = useSuccess();
+    const { showInfoToast } = useInfo();
   const navigate = useNavigate();
 
 
@@ -76,7 +77,7 @@ const JobList: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to trigger webhook');
         }
-        showSuccessToast("Process for Screening has started in the background. \n Time to finsih the screening is depends on Number candaidate applied.")
+        showInfoToast("Process for Screening has started in the background. \n Time to finsih the screening is depends on Number candaidate applied.")
         console.log('Webhook triggered successfully');
       } catch (error) {
         console.error('Error triggering webhook:', error);
@@ -87,6 +88,17 @@ const JobList: React.FC = () => {
   useEffect(() => {
     fetchRecords();
   }, []);
+
+
+    const [ showLoading, setShowLoaidng ] = useState(false)
+      useEffect(() =>{
+        setShowLoaidng(true)
+        setTimeout(() => {
+          setShowLoaidng(false)
+        },3000)
+      },[])
+  
+      
 
   return (
     <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 2, md: 2 },  }}>
@@ -115,6 +127,12 @@ const JobList: React.FC = () => {
           Create a New Job
         </Button>
       </Box>
+{ showLoading ?     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 4 }}>
+        { Array.from({ length: 3 }).map((_, idx) =>  <JobListSkeleton />)}
+      </Box> : 
+   
+
+     
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, justifyContent: 'flex-start', alignItems: 'flex-start', mt: 4 }}>
        {records.length  == 0  && <p style={{color:"white"}}>No jobs created</p>}
         {records.map((job,index) => (
@@ -180,6 +198,7 @@ const JobList: React.FC = () => {
           </GradientCard>
         ))}
       </Box>
+       }
     </Box>
   );
 };

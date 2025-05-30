@@ -13,12 +13,15 @@ const JobDetails = React.lazy(() => import('@/features/jobs/JobDetails'));
 
 const CandidateDetails = React.lazy(() => import('@/features/candidates/CandidateDetails'));
 const CallInsightView = React.lazy(() => import('@/features/candidates/CallInsightView'));
-import { SuccessProvider } from '@/context/InfoToastContext';
-import SuccessToastComponent from '@/components/InfoToastComponent';
+import { InfoProvider } from '@/context/InfoToastContext';
+import { SuccessProvider } from '@/context/SuccessToastContext';
+import InfoToastComponent from '@/components/InfoToastComponent';
+import SuccessToastComponent from '@/components/SuccessToastComponent';
 
 
 const AppRoutes: React.FC = () => (
   <BrowserRouter>
+  <InfoProvider>
   <SuccessProvider>
     <React.Suspense fallback={<LoadingDots />}>
       <Routes>
@@ -48,8 +51,10 @@ const AppRoutes: React.FC = () => (
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </React.Suspense>
-    <SuccessToastComponent />
+    <InfoToastComponent />
+    <SuccessToastComponent/>
     </SuccessProvider>
+    </InfoProvider>
   </BrowserRouter>
 );
 
