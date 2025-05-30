@@ -116,7 +116,7 @@ const [ showLoading, setShowLoaidng ] = useState(false)
         </GradientCard>
         <GradientCard gradient="linear-gradient(210deg, #336589 0%, #4C247E 100%)" sx={{ flex: 1, p: 1, borderRadius: 2, boxShadow: 6, position: 'relative' }}>
           <Typography sx={{ color: 'white', fontWeight: 700, fontSize: 24, mb: 1 }}>Call Insights</Typography>
-          {candidateCallDetails && candidateCallDetails?.fields?.RecruiterApproval != "On Hold" ?
+          {candidateDetails && candidateDetails?.fields?.RecruiterApproval != "On Hold" ?
             <> <Chip label={candidateCallDetails?.fields?.RecruiterApproval} sx={{ position: 'absolute', top: 24, right: 24, background: '#3ad29f', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
               <Typography sx={{ color: 'white', opacity: 0.85, mb: 1, fontSize: 18, fontWeight: 700 }}>
                 <img src={scoreCard} style={{ height: "20px", marginRight: "5px", verticalAlign: "middle" }} /> {candidateCallDetails?.fields?.
