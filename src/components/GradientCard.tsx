@@ -6,11 +6,13 @@ interface GradientCardProps {
   children: React.ReactNode;
   sx?: object;
   childLayout?:object
+  className?:string
   onClick?:() => void
 }
 
-const GradientCard: React.FC<GradientCardProps> = ({ gradient, children, sx,childLayout,onClick}) => (
+const GradientCard: React.FC<GradientCardProps> = ({ gradient, className,children, sx,childLayout,onClick}) => (
   <Card
+  className={className && className}
     sx={{
       background: gradient,
       color: '#fff',

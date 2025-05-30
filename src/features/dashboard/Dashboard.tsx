@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button, Chip, Select, MenuItem } from '@mui/material';
 import GradientCard from '@/components/GradientCard';
 import ResponsiveChart from '@/components/ResponsiveChart';
 import { LineChart,AreaChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, Area, CartesianGrid } from 'recharts';
-import dashboardIllustration from '@/assets/dashboard-illustration.png';
+// import dashboardIllustration from '@/assets/dashboard-illustration.png';
+import dashboardIllustration1 from '@/assets/dashboard-illustration-1.png';
 import { useNavigate } from 'react-router-dom';
 
 const salesData = [
@@ -26,6 +27,30 @@ const salesData1 = [
   { name: 'apr', Graph1: 20000, Graph2: 14000 },
  
 ];
+
+
+const dataByYear:any = {
+  2022: [
+    { name: 'Jan', Graph1: 0, Graph2: 0 },
+    { name: 'feb', Graph1: 15000, Graph2: 12000 },
+    { name: 'mar', Graph1: 10000, Graph2: 10000 },
+    { name: 'apr', Graph1: 20000, Graph2: 14000 },
+    { name: 'Jan', Graph1: 0, Graph2: 0 },
+    { name: 'feb', Graph1: 15000, Graph2: 12000 },
+    { name: 'mar', Graph1: 10000, Graph2: 10000 },
+    { name: 'apr', Graph1: 20000, Graph2: 14000 },
+  ],
+  2021: [
+    { name: 'Jan', Graph1: 1000, Graph2: 0 },
+    { name: 'feb', Graph1: 19000, Graph2: 14000 },
+    { name: 'mar', Graph1: 14000, Graph2: 12000 },
+    { name: 'apr', Graph1: 24000, Graph2: 16000 },
+    { name: 'Jan', Graph1: 10000, Graph2: 0 },
+    { name: 'feb', Graph1: 19000, Graph2: 14000 },
+    { name: 'mar', Graph1: 14000, Graph2: 12000 },
+    { name: 'apr', Graph1: 24000, Graph2: 16000 },
+  ]
+};
 
 const donutData = [
   { name: 'Total Task', value: 1234, color: '#7B7BFF' },
@@ -72,15 +97,18 @@ const roleRows = [
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-
+  const [selectedYear, setSelectedYear] = useState<any>(2022);
+  const salesData2:any = dataByYear[selectedYear];
+  
   return (
     <Box sx={{ background: '#171717', minHeight: '100vh', p: { xs: 1, md: 4 },  }}>
       {/* Top Row */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4, mb: 4 }}>
         {/* Welcome Card */}
         <GradientCard
+       className='dahsbiard'
           gradient="linear-gradient(180deg, #34708B 0%, #2B3C6F 100%)"
-          sx={{ flex: 2, minHeight: 220, display: 'flex', alignItems: 'center',  p: 4, borderRadius: 4, boxShadow: 6 }}
+          sx={{ flex: 2, minHeight: 220, display: 'flex', alignItems: 'center',position:"relative",     height: "max-content", p: 4, pb:0, borderRadius: 4, boxShadow: 6 }}
           childLayout= {{display:"flex",flexDreiction:"column"}}
         >
           <Box >
@@ -113,8 +141,8 @@ const Dashboard: React.FC = () => {
               Create New Job Role
             </Button>
           </Box>
-          <Box sx={{  display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <img src={dashboardIllustration} alt="AI Recruiter" style={{ height: 200}} />
+          <Box sx={{  display: 'flex', justifyContent: 'flex-end', alignItems: 'center',  }}>
+            <img src={dashboardIllustration1} alt="AI Recruiter" style={{ height: 300,}} />
           </Box>
         </GradientCard>
         {/* Stat Cards */}
@@ -143,7 +171,7 @@ const Dashboard: React.FC = () => {
                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.7)" axisLine={false} tickLine={false} />
                     <YAxis stroke="rgba(255,255,255,0.7)" axisLine={false} tickLine={false} tickFormatter={(value) => `$${value/100}K`} />
                     <Tooltip contentStyle={{ background: '#23234f', border: 'none', color: 'white',  }} />
-                    <Area type="monotone" dataKey="Graph1" stroke="#00BFFF"   strokeWidth={0} fillOpacity={1} fill="url(#colorUv)" />
+                    <Area type="monotone" dataKey="Graph1" stroke="#73FFCC"   strokeWidth={2} fillOpacity={1} fill="none" />
                     {/* <Line type="monotone" dataKey="Graph1" stroke="#fff" strokeWidth={2} dot={false} /> */}
                   </AreaChart>
                 </ResponsiveContainer>
@@ -176,7 +204,11 @@ const Dashboard: React.FC = () => {
         <GradientCard gradient="linear-gradient(180deg, #2B3C6F 0%, #5545B9 100%)" sx={{ flex: 2, p: 1, minHeight: 300, borderRadius: 4, boxShadow: 6 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography fontWeight={700} color="white" sx={{  fontSize: 22 }}>Sales</Typography>
-            <Select value={2022} sx={{ color: 'white', background: 'transparent',borderColor:"#525252", borderRadius: 2, fontWeight: 700, fontSize: 16 }}>
+            <Select 
+            // value={2022} 
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+            sx={{ color: 'white', background: 'transparent',borderColor:"#525252", borderRadius: 2, fontWeight: 700, fontSize: 16 }}>
               <MenuItem value={2022}>2022</MenuItem>
               <MenuItem value={2021}>2021</MenuItem>
             </Select>
@@ -184,7 +216,7 @@ const Dashboard: React.FC = () => {
           <Box>
             <ResponsiveChart height= "250px">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={salesData1} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                <LineChart data={salesData2} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#074C8F" stopOpacity={1}/>

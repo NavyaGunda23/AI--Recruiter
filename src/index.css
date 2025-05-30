@@ -82,3 +82,6 @@ button:focus-visible {
   100%  {-webkit-mask-position: 0% 0%  ,50% 0%  ,100% 0%  }
 }
 
+.dahsbiard .MuiCardContent-root{
+  padding-bottom: 0px !important;
+}
