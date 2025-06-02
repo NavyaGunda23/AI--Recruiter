@@ -31,7 +31,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/app/authSlice';
 import type { RootState } from '@/app/store';
-import Innovasenslogo from "@/assets/innovasense.png"
+// import Innovasenslogo from "@/assets/innovasense.png"
+import Innovasenslogo from "@/assets/innovasense-1.png"
 import DashboardImg from "@/assets/dashboard.png"
 import JobsImg from "@/assets/jobs.png"
 import LogoutImg from '@/assets/logput.png'
@@ -72,7 +73,7 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     <Box sx={{ background: '#1F2039', height: '100%', color: 'white',width:"90%" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', p: 3, justifyContent: 'flex-start' }}>
         {/* Company Logo and Name */}
-        <img src={Innovasenslogo} alt="Innovasense Logo" style={{  height: 20, marginRight: 10 }} />
+        <img src={Innovasenslogo} alt="Innovasense Logo" style={{  height: 30, marginRight: 10 }} />
        
       </Box>
      

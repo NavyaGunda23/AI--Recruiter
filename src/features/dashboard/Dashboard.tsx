@@ -112,14 +112,14 @@ const Dashboard: React.FC = () => {
           childLayout= {{display:"flex",flexDreiction:"column"}}
         >
           <Box >
-            <Typography sx={{ color: 'white', fontWeight: 200, fontSize: 19, mb: 1,}}>
+            {/* <Typography sx={{ color: 'white', fontWeight: 200, fontSize: 19, mb: 1,}}>
               Welcome To
-            </Typography>
+            </Typography> */}
             <Typography sx={{ color: 'white', fontWeight: 600, fontSize: 23, mb: 2, }}>
-              Your AI Recruiter
+            Launch Your Next Hire
             </Typography>
             <Typography sx={{ color: 'white',  fontWeight: 300, fontSize: 16, mb: 4 }}>
-              Lorem ipsum dolor sit amet consectetur. Bibendum risus urna tortor praesent. Lorem ipsum dolor sit amet consectetur. Bibendum risus urna tortor praesent.
+            Define the position you’re hiring for, and let me take care of sourcing, screening and scoring the best-fit candidates.
             </Typography>
             <Button
               variant="contained"
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
               }}
               onClick={() => navigate('/jobs/create')}
             >
-              Create New Job Role
+              Create Job Position
             </Button>
           </Box>
           <Box sx={{  display: 'flex', justifyContent: 'flex-end', alignItems: 'center',  }}>
@@ -203,14 +203,15 @@ const Dashboard: React.FC = () => {
         {/* Sales Chart */}
         <GradientCard gradient="linear-gradient(180deg, #2B3C6F 0%, #5545B9 100%)" sx={{ flex: 2, p: 1, minHeight: 300, borderRadius: 4, boxShadow: 6 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography fontWeight={700} color="white" sx={{  fontSize: 22 }}>Sales</Typography>
+            <Typography fontWeight={700} color="white" sx={{  fontSize: 22 }}>Applications over time</Typography>
             <Select 
             // value={2022} 
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
             sx={{ color: 'white', background: 'transparent',borderColor:"#525252", borderRadius: 2, fontWeight: 700, fontSize: 16 }}>
-              <MenuItem value={2022}>2022</MenuItem>
-              <MenuItem value={2021}>2021</MenuItem>
+               <MenuItem value={2022}>All Positions</MenuItem>
+              <MenuItem value={2022}>AI Engineer</MenuItem>
+              <MenuItem value={2021}>Full-Stack Developer</MenuItem>
             </Select>
           </Box>
           <Box>

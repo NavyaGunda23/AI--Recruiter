@@ -85,3 +85,12 @@ button:focus-visible {
 .dahsbiard .MuiCardContent-root{
   padding-bottom: 0px !important;
 }
+input:-webkit-autofill {
+  transition: background-color 9999s ease-in-out 0s;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  /* color: white !important; */
+}
+.MuiFormControl-marginNormal{
+  margin-top: 0px !important;
+}
