@@ -5,6 +5,8 @@ import dashboardIllustration1 from '@/assets/dashboard-illustration-1.png';
 
 import './AnimatedVoiceButton.css';
 import { Typography } from '@mui/material';
+import { useSuccess } from '@/context/SuccessToastContext';
+import { useInfo } from '@/context/InfoToastContext';
 
 interface VapiVoiceChatProps {
     handleVapiChatClick: (active:boolean) => void;
@@ -12,6 +14,7 @@ interface VapiVoiceChatProps {
 
 
 const VapiVoiceChat: React.FC<VapiVoiceChatProps> = ({handleVapiChatClick}) => {
+    const { showInfoToast} = useInfo()
     const [vapi, setVapi] = useState<Vapi | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isListening, setIsListening] = useState(false);
@@ -44,19 +47,24 @@ const VapiVoiceChat: React.FC<VapiVoiceChatProps> = ({handleVapiChatClick}) => {
     }, []);
 
     const handleToggleVoice = () => {
+      
         if (!vapi) {
           console.warn('Vapi instance not ready yet');
           return;
         }
       
         if (!isListening) {
+            
           try {
             vapi.start('c7383a66-3bc5-4df6-9054-7006d6d03c43');
+            showInfoToast("Voice is listening. Wait for few seconds to hear from Reem")
             handleVapiChatClick(true);
+           
           } catch (error) {
             console.error('Failed to start Vapi:', error);
           }
         } else {
+
           try {
             vapi.stop();
             handleVapiChatClick(false);

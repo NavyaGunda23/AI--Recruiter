@@ -12,6 +12,7 @@ import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
 import { useSuccess } from '@/context/SuccessToastContext';
 import VapiVoiceChat from '@/components/VapiVoiceChat';
 import { useAirtableContext } from '@/context/AirtableContext';
+import { useInfo } from '@/context/InfoToastContext';
 
 
 interface JobFormValues {
@@ -186,7 +187,7 @@ const fetchRecords = async () => {
       fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblc4r88rUh95DHfZ", requestOptions)
       .then((response) => response.json())
   
-     console.log(data)
+    
     })
  
   } catch (err) {
@@ -195,9 +196,11 @@ const fetchRecords = async () => {
   }
 };
 
-
+const { showInfoToast} = useInfo()
 const handleVapiChatClick = (active: boolean) => {
+ 
   if(active){
+    showInfoToast("Voice is activated. Wait for few seconds to hear from Reem")
     fetchRecords()
     setVoiceActive(active);
   }
