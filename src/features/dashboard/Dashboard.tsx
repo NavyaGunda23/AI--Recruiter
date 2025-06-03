@@ -193,7 +193,7 @@ const topCandidates = [
 ]
 
 const CustomLegend = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
     <div style={{ color: 'white', fontSize: 14 }}>
       <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#1CD0BB', marginRight: 8 }} />
       Female
@@ -201,6 +201,32 @@ const CustomLegend = () => (
     <div style={{ color: 'white', fontSize: 14 }}>
       <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#EC4899', marginRight: 8 }} />
       Male
+    </div>
+  </div>
+);
+
+
+const CustomLegendFunnel = () => (
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+    <div style={{ color: 'white', fontSize: 14 }}>
+      <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#CA5D56', marginRight: 8 }} />
+      Applied
+    </div>
+    <div style={{ color: 'white', fontSize: 14 }}>
+      <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#D8A758', marginRight: 8 }} />
+      Resume Qualified
+    </div>
+    <div style={{ color: 'white', fontSize: 14 }}>
+      <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#5DA5CD', marginRight: 8 }} />
+      Inital Approach
+    </div>
+    <div style={{ color: 'white', fontSize: 14 }}>
+      <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#5B76AB', marginRight: 8 }} />
+      Interview
+    </div>
+    <div style={{ color: 'white', fontSize: 14 }}>
+      <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', backgroundColor: '#4BA991', marginRight: 8 }} />
+      Hired
     </div>
   </div>
 );
@@ -347,11 +373,15 @@ sx={{
                     />
 
                   </Funnel>
+                  
                 </FunnelChart>
 
 
               </ResponsiveContainer>
             </ResponsiveChart>
+            <div style={{ position: 'absolute', bottom: 40, left: 10 }}>
+              <CustomLegendFunnel />
+            </div>
           </Box>
 
         </GradientCard>
@@ -380,13 +410,13 @@ sx={{
                   <XAxis dataKey="name" stroke="rgba(255,255,255,0.7)" axisLine={false} tickLine={false} />
                   <YAxis stroke="rgba(255,255,255,0.7)" axisLine={false} tickLine={false} tickFormatter={v => `${v / 100}`} />
                   <Tooltip contentStyle={{ background: '#23234f', border: 'none', color: 'white', }} />
-                  {/* <Legend
+                  <Legend
                     verticalAlign="bottom"
                     align="left"
                     iconType="square"
                     iconSize={10}
                     formatter={(value) => <span style={{ color: 'white', fontSize: 14 }}>{value}</span>}
-                  /> */}
+                  />
                   <Line type="monotone" dataKey="candidate" stroke="#73FFCC" strokeWidth={3} dot={false} isAnimationActive={true}
     animationDuration={7000} />
                 </LineChart>

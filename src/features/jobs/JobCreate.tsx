@@ -199,15 +199,14 @@ const fetchRecords = async () => {
 const handleVapiChatClick = (active: boolean) => {
   if(active){
     fetchRecords()
-  }
-
-  setTimeout(() => {
     setVoiceActive(active);
-    if (active && createPosition[0]?.fields) {
-      const updatedValues = getInitialValues(createPosition[0].fields);
-      setFormValues(updatedValues);
-    }
-  },5000)
+  }
+  // setTimeout(() => {
+  //   if (active && createPosition[0]?.fields) {
+  //     const updatedValues = getInitialValues(createPosition[0].fields);
+  //     setFormValues(updatedValues);
+  //   }
+  // },5000)
  
 }; useEffect(() => {
   if (vocieActive && createPosition.length > 0 && createPosition[0]?.fields) {
