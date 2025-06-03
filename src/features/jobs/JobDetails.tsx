@@ -230,7 +230,10 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
   const fetchFiles = async (oneDriveFolderID: any) => {
     try {
       //https://innova-recruiter-candidate.darkube.app
-      const res: any = await axios.get(`https://innova-recruiter-web.darkube.app/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
+
+      
+
+      const res: any = await axios.get(`https://sharepoint-api-recruiter.wonderfulmoss-ad1f6e96.uaenorth.azurecontainerapps.io/api/list-files?folderId=${oneDriveFolderID}`); // Adjust base URL if needed
       const jobs = res.data?.files.map((record: any) => ({
         id: record.id,
         name: record.name || '',
@@ -420,7 +423,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
         sx={{ mb: 3, borderBottom: '1px solid #261F53', minHeight: 48 }}
         TabIndicatorProps={{ style: { background: '#9F31D9', height: 3 } }}
       >
-        <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Selected</span>} sx={{ minWidth: 120 }} />
+        <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>ShortListed</span>} sx={{ minWidth: 120 }} />
         <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
       

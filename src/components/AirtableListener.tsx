@@ -69,7 +69,7 @@ const AirtableListener: React.FC = () => {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-
+        console.log("data",data)
         if (data.type === 'INIT' || data.type === 'update') {
           switch (data.tableName) {
             case 'Phone_call':

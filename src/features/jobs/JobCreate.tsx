@@ -95,7 +95,7 @@ const JobCreate: React.FC = () => {
         onSubmit={async (values, { setSubmitting }) => {
           const folderName = values?.Position
           try {
-            const res:any = await axios.post("https://innova-recruiter-web.darkube.app/api/create-folder", {
+            const res:any = await axios.post("https://sharepoint-api-recruiter.wonderfulmoss-ad1f6e96.uaenorth.azurecontainerapps.io/api/create-folder", {
               folderName,
             });
            const driveFileid = res?.data?.folder?.id

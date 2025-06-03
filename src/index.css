@@ -94,3 +94,6 @@ input:-webkit-autofill {
 .MuiFormControl-marginNormal{
   margin-top: 0px !important;
 }
+.MuiSelect-root:focus-visible, .MuiSelect-select:focus-visible{
+  outline: none !important;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, Paper, Button, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails, LinearProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import GradientCard from '@/components/GradientCard';
 import EmailIcon from '@mui/icons-material/Email';
@@ -12,10 +12,12 @@ import { useAirtableContext } from '@/context/AirtableContext';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CallInsightsSkeletonView from '@/components/CallInsightsSkeletobView';
+import { useSuccess } from '@/context/SuccessToastContext';
 
 
 const CallInsightView: React.FC = () => {
   const { id } = useParams();
+  const { showSuccessToast} = useSuccess()
    const {
         screeningRecords, phoneCallRecords
       } = useAirtableContext();
@@ -65,6 +67,42 @@ const CallInsightView: React.FC = () => {
       },3000)
     },[])
 
+    const getMaxScore = (index: number): number => {
+      if (index < 3) return 150;      // Questions 1–3 (index 0–2)
+      if (index < 8) return 100;      // Questions 4–8 (index 3–7)
+      return 50;                      // Question 9 (index 8+)
+    };
+
+    const handleIntiateCall = (event: any, airtable_id: any, canidateStatus: any) => {
+      event?.stopPropagation();
+    
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
+      myHeaders.append("Content-Type", "application/json");
+    
+      const raw = JSON.stringify({
+        records: [
+          {
+            id: airtable_id,
+            fields: {
+              RecruiterApproval: canidateStatus,
+            },
+          },
+        ],
+      });
+    
+      const requestOptions: any = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+    
+      fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblcdsocb7LuTWZ1B", requestOptions)
+        .then((response) => response.json())
+        showSuccessToast("You have Rejected the Candidate")
+
+    }
 
   return (
     <>
@@ -99,6 +137,9 @@ const CallInsightView: React.FC = () => {
 RecruiterNotes
 }</Typography>
         <Chip label={candidateCallDetails?.fields?.CallStatus}sx={{ position: 'absolute', top: 24, right: 24, background: '#177E00', color: 'white', fontWeight: 700, fontSize: 14, borderRadius: 2 }} />
+        <Box sx={{
+           position: 'absolute', top: 74, right: 24,display:"flex",gap:2
+        }}>
         <Button
           variant="contained"
           sx={{
@@ -111,7 +152,7 @@ RecruiterNotes
             fontSize: 18,
             textTransform: 'none',
           
-            position: 'absolute', top: 74, right: 24,
+          
             boxShadow: 2,
             '&:hover': { background: '#385F8D', },
             '&.Mui-disabled': {
@@ -124,6 +165,27 @@ RecruiterNotes
         >
           Approve
         </Button>
+        <Button
+                            variant="outlined"
+                            sx={{
+                              color: 'white',
+                              borderColor: 'white',
+                              
+                              fontWeight: 700,
+                              borderRadius: 2,
+                              px: 2.5,
+                              py: 1,
+                              fontSize: 15,
+                              textTransform: 'none',
+                             
+                              '&:hover': { borderColor: '#a084e8', color: '#a084e8' },
+                            }}
+                            onClick={(event) => handleIntiateCall(event, candidateCallDetails.id, "Reject")}
+                          >
+                            Reject
+                          </Button>
+        </Box>
+    
       </GradientCard>
 
       <Box sx={{ background: '#261F53', borderRadius: 4, p: 4, color: 'white', boxShadow: 6, mb: 4 }}>
@@ -135,7 +197,11 @@ Final_short_rationale
   
       <Typography sx={{fontSize:"20px",color:"white",mb:2}}>Question Details:</Typography>
       <Box >
-      {questionEntries?.map((row: any, idx: number) => (
+      {questionEntries?.map((row: any, idx: number) => {  const maxScore = getMaxScore(idx);
+  const percentage = (row.score / maxScore) * 100;
+  const isLastItem = idx < questionEntries.length - 2; // hide for last 2 questions
+
+return (
         <Accordion key={idx} sx={{ backgroundColor: '#261F53', color: 'white', boxShadow: 6, mb: 2, borderRadius: 1, p: 0, }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
           <Box sx={{display:"flex",justifyContent:"space-between",width:"100%"}}>
@@ -143,7 +209,43 @@ Final_short_rationale
               Question {idx + 1}
               
             </Typography>
-            <Chip label={`Score`+row.score} sx={{  background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', color: 'white', fontWeight: 400, fontSize: 12, borderRadius: 2 }} />
+
+{isLastItem  && (
+
+<Box sx={{  position: 'relative',display:"flex",flexDirection:"row",alignItems:"center" }}>
+<Typography
+variant="caption"
+sx={{
+  position: 'relative',
+  top: 0,
+  left: 0,
+  width: 'max-content',
+  textAlign: 'center',
+  color: 'white',
+  fontWeight: 500,
+  fontSize: "14px",
+  lineHeight: '12px',
+}}
+>
+Score: {row.score}/{maxScore} : 
+</Typography>
+<LinearProgress
+variant="determinate"
+value={percentage}
+sx={{
+  height: 25,
+  borderRadius: 5,
+  ml:"10px",
+  backgroundColor:'#1f2039' ,
+  width:"200px",
+  '& .MuiLinearProgress-bar': {
+    background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)',
+  },
+}}
+/>
+
+</Box>
+)}
 
           </Box>
             
@@ -163,7 +265,7 @@ Final_short_rationale
            
           </AccordionDetails>
         </Accordion>
-      ))}
+      )})}
 
       <Box sx={{ mt: 2, background: 'linear-gradient(135deg, #395A84 0%, #4C277F 100%)', p: 2, borderRadius: 1,mb:4 }}>
         <Typography fontWeight={700} fontSize={16} color="white" align='right'>
