@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import { Box, Typography, Button, InputAdornment, MenuItem, Select, OutlinedInput, Chip, TextField as MuiTextField } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
@@ -197,7 +197,10 @@ const fetchRecords = async () => {
 
 
 const handleVapiChatClick = (active: boolean) => {
-  fetchRecords()
+  if(active){
+    fetchRecords()
+  }
+
   setTimeout(() => {
     setVoiceActive(active);
     if (active && createPosition[0]?.fields) {
