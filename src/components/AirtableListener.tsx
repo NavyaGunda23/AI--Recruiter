@@ -19,7 +19,7 @@ const AirtableListener: React.FC = () => {
         // 'wss://innovasense-ai-ws.50000words.com' wokring one
        
         window.location.protocol === 'https:'
-          ?  "wss://ai-recruiter-websocket.uaenorth.azurecontainer.io:5174"
+          ?  'wss://innovasense-ai-ws.50000words.com'
         //   'wss://27f52920-f391-4c9e-89c7-063ea0de6069.hsvc.ir:31853'
           :  'ws://localhost:5174'
       );

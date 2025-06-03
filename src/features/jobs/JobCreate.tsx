@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, InputAdornment, MenuItem, Select, OutlinedInput, Chip, TextField as MuiTextField } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
@@ -10,6 +10,21 @@ import type { SelectChangeEvent } from '@mui/material';
 import type { FieldProps } from 'formik';
 import { createFolderInSharedFolder } from '@/createFolderInSharedFolder';
 import { useSuccess } from '@/context/SuccessToastContext';
+import VapiVoiceChat from '@/components/VapiVoiceChat';
+import { useAirtableContext } from '@/context/AirtableContext';
+
+
+interface JobFormValues {
+  Position: string;
+  Job_Description: string;
+  Experience: number;
+  Location: string[];
+  'Onsite/Remote': string[];
+  Language: string[];
+  Salary: string;
+  Recruiter_Email_Address: string;
+  Recruiter_Name: string;
+}
 
 const JobSchema = Yup.object().shape({
   Position: Yup.string().required('Required'),
@@ -83,14 +98,137 @@ const JobCreate: React.FC = () => {
   const languages = [ 'English', 'Arabic'];
  
  const { showSuccessToast } = useSuccess();
+ const { createPosition} = useAirtableContext()
+ const [ intailCalues, setIntailValues] = useState(initialValues)
 
+
+ const getInitialValues = (position: any): JobFormValues => {
+  return {
+    Position: position?.Position || '',
+    Job_Description: position?.Job_Description || '',
+    Experience: position?.Experience || 1,
+    Location: Array.isArray(position?.Location)
+      ? position.Location
+      : typeof position?.Location === 'string'
+      ? position.Location.split(',').map((item: string) => item.trim())
+      : [],
+    'Onsite/Remote': Array.isArray(position?.['Onsite/Remote'])
+      ? position['Onsite/Remote']
+      : typeof position?.['Onsite/Remote'] === 'string'
+      ? position['Onsite/Remote'].split(',').map((item: string) => item.trim())
+      : [],
+    Language: Array.isArray(position?.Language)
+      ? position.Language
+      : typeof position?.Language === 'string'
+      ? position.Language.split(',').map((item: string) => item.trim())
+      : [],
+    Salary: position?.Salary || '',
+    Recruiter_Email_Address: position?.Recruiter_Email_Address || '',
+    Recruiter_Name: position?.Recruiter_Name || '',
+  };
+};
+
+const [formValues, setFormValues] = useState<JobFormValues>(initialValues);
+
+const [ vocieActive, setVoiceActive] = useState<Boolean>(false)
+
+
+
+
+const fetchRecords = async () => {
+  try {
+    const response = await fetch(
+      'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblc4r88rUh95DHfZ',
+      {
+        headers: {
+          Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const data = await response.json().then((response) => {
+      const recordId = response?.records[0]?.id
+
+
+      const raw = JSON.stringify({
+        records: [
+          {
+            id: recordId,
+            fields: {
+              Position: '',
+              Job_Description: '',
+              Experience: 0, // Use 0 instead of null
+              Location: [], // Must be array if it's a multi-select or linked field
+              'Onsite/Remote': [],
+              Language: [],
+              Salary: '',
+            
+            },
+          },
+        ],
+      });
+    
+      const requestOptions: any = {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc` ,// or hardcoded if local testing
+          'Content-Type': 'application/json'
+        },
+        body: raw,
+        redirect: "follow",
+      };
+  
+      fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblc4r88rUh95DHfZ", requestOptions)
+      .then((response) => response.json())
+  
+     console.log(data)
+    })
+ 
+  } catch (err) {
+    console.error('Error:', err);
+    // setError(err?.message);
+  }
+};
+
+
+const handleVapiChatClick = (active: boolean) => {
+  fetchRecords()
+  setTimeout(() => {
+    setVoiceActive(active);
+    if (active && createPosition[0]?.fields) {
+      const updatedValues = getInitialValues(createPosition[0].fields);
+      setFormValues(updatedValues);
+    }
+  },5000)
+ 
+}; useEffect(() => {
+  if (vocieActive && createPosition.length > 0 && createPosition[0]?.fields) {
+    const timer = setTimeout(() => {
+      const updatedValues = getInitialValues(createPosition[0].fields);
+      setFormValues(updatedValues);
+    }, 5000); // adjust delay as needed (not 30000 = 30s!)
+
+    return () => clearTimeout(timer);
+  }
+}, [createPosition, vocieActive]);
+
+
+useEffect(() =>{
+  console.log("intailCalues",intailCalues)
+},[intailCalues])
   return (
     <Box sx={{  minHeight: '100vh', p: { xs: 2, md: 1 },  }}>
       <Typography sx={{ color: 'white', fontWeight: 400, fontSize: 20, mb: 4, }}>
         Create a New job
       </Typography>
-      <Formik
-        initialValues={initialValues}
+      <Formik<JobFormValues>
+      enableReinitialize
+        initialValues={formValues}
         validationSchema={JobSchema}
         onSubmit={async (values, { setSubmitting }) => {
           const folderName = values?.Position
@@ -99,19 +237,11 @@ const JobCreate: React.FC = () => {
               folderName,
             });
            const driveFileid = res?.data?.folder?.id
-            
-  // const data = {...values , role:values?.Position,
-  //   //  oneDriveFolderID:driveFileid
-  //   }
-    // const data = { Position: values?.Position }
-
     const data = {
       records: [
         {
           fields: {
             ...values,
-            // formMode:'create',
-            // submittedAt:new Date().toISOString(),
             Experience:Number(values?.Experience),
             oneDriveFolderID:driveFileid
           }
@@ -120,8 +250,6 @@ const JobCreate: React.FC = () => {
     };
   
     await axios.post(
-
-      // 'https://airtable.com/app6R5bTSGcKo2gmV/Recruiter_Job_role'
       'https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblAz9PFQthvbxaHu',
   data,
       
@@ -381,7 +509,7 @@ const JobCreate: React.FC = () => {
                    )}
                 </Field>
               </Box>
-              <Box sx={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
+              <Box sx={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-start', gap: 2, mt: 2 }}>
                 <Button
                   variant="outlined"
                   sx={{
@@ -421,10 +549,20 @@ const JobCreate: React.FC = () => {
                   Create
                 </Button>
               </Box>
+            
             </Box>
           </Form>
         )}
       </Formik>
+      <Box sx={{
+                position:"fixed",
+                bottom:"10px",
+                right:"10px"
+              }}>
+               
+                 <VapiVoiceChat handleVapiChatClick={handleVapiChatClick}/>
+
+              </Box>
     </Box>
   );
 };

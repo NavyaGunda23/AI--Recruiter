@@ -9,6 +9,7 @@ import { LineChart, AreaChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
 import dashboardIllustration1 from '@/assets/dashboard-illustration-1.png';
 import { useNavigate } from 'react-router-dom';
 import personPic from '@/assets/person-photi.png'
+import VapiVoiceChat from '@/components/VapiVoiceChat';
 
 
 
@@ -274,7 +275,9 @@ sx={{
 </Select>
       </Box>
     
+<Box>
 
+</Box>
 
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4, mb: 4 }}>
 
@@ -292,6 +295,7 @@ sx={{
             <Typography sx={{ color: 'white', fontWeight: 300, fontSize: 16, mb: 4 }}>
               Define the position you’re hiring for, and let me take care of sourcing, screening and scoring the best-fit candidates.
             </Typography>
+            <Box sx={{display:"flex",gap:2}}>
             <Button
               variant="contained"
               sx={{
@@ -311,6 +315,9 @@ sx={{
             >
               Create Job Position
             </Button>
+           
+            </Box>
+            
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', }}>
             <img src={dashboardIllustration1} alt="AI Recruiter" style={{ height: 300, }} />
