@@ -105,7 +105,7 @@ const JobList: React.FC = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
     
         <Typography sx={{ color: 'white', fontWeight: 600, fontSize: 28 }}>
-          Job List
+          Positions
         </Typography>
         <Button
           variant="contained"

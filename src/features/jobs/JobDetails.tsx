@@ -104,6 +104,7 @@ const JobDetails: React.FC = () => {
   };
 
   //from drive
+  const [candiateDetailsDriveBackup, setCandatdateDetailsBackup] = useState<any>([])
   const [candiateDetailsDrive, setCandatdateDetails] = useState<any>([])
   const [rejectedCandidateDetails, setRejectedCandidateDetails] = useState<any>([]);
   const [candidateStatusModi, setCandidateModi] = useState<any>()
@@ -117,40 +118,6 @@ const JobDetails: React.FC = () => {
   const handleClose = () => {
     setActiveCandidateId(null);
   };
-
-  // const handleIntiateCall = (event: any, airtable_id: any, canidateStatus: any) => {
-  //   event?.stopPropagation()
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Authorization", "Bearer pat3fMqN9X4eRWFmd.b31cffaf020d8e4666de0f657adc110e17127c9c38b093cf69d0996fe8e8dfcc");
-  //   myHeaders.append("Content-Type", "application/json");
-  //   myHeaders.append("Cookie", "brw=brwiMeamMoDgk2PG7; brwConsent=opt-in; AWSALBTG=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=; AWSALBTGCORS=zGcmiHtW0swgSl5qMiQm3A8YUCN+tgSVc26NjdSTLOhASizMIiZoRXU6Pu7pzF31Q11fV3iZXBIvhJx9fJAxZCYWS7UDIbFnUHA1I2Z0J4N4knHvf7qniBVcxcMCtowrpUB+OVe7Rc0WOava9wHlPW5931AndyeGA2f9t4pMj/bewcpEOOM=");
-
-  //   const raw = JSON.stringify({
-  //     "records": [
-  //       {
-  //         "id": airtable_id,
-  //         "fields": {
-  //           "RecruiterApproval": canidateStatus
-  //         }
-  //       }
-  //     ]
-  //   });
-
-  //   const requestOptions: any = {
-  //     method: "PATCH",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow"
-  //   };
-
-  //   fetch("https://api.airtable.com/v0/app6R5bTSGcKo2gmV/tblon8HRet4lsDOUe", requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) => console.log(result))
-  //     .catch((error) => console.error(error));
-  //   setCandidateModi(true)
-
-
-  // }
 
   const handleIntiateCall = (event: any, airtable_id: any, canidateStatus: any) => {
     event?.stopPropagation();
@@ -225,7 +192,6 @@ const JobDetails: React.FC = () => {
   };
   
 
-
 const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
   const fetchFiles = async (oneDriveFolderID: any) => {
     try {
@@ -241,6 +207,7 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
       }));
 
       setCandatdateDetails(jobs)
+      setCandatdateDetailsBackup(jobs)
       console.log("fetchFiles",jobs)
       setOneDriveFiles(jobs)
       console.log("res", res)
@@ -251,7 +218,7 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
   };
 
   useEffect(() => {
-    if (!screeningRecords?.length || !candiateDetailsDrive?.length) return;
+    if (!screeningRecords?.length || !candiateDetailsDrive?.length ) return;
 
     const airtableRecords = screeningRecords.filter((records) => records?.fields?.Position == jobName);
     const rejectedCandidatesSet = new Set<string>();
@@ -269,7 +236,7 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
       const status = record.fields?.RecruiterApproval;
       const shortInfoAI = record.fields?.ShortRationale;
       const canidateName = record.fields?.Name;
-      const ondeRdiveId = candiateDetailsDrive.filter((drive:any) => drive?.name == record.fields?.CandidateFileName)[0]?.id
+      const ondeRdiveId = candiateDetailsDriveBackup.filter((drive:any) => drive?.name == record.fields?.CandidateFileName)[0]?.id
       if (!name) return;
 
       if (status === "Reject") {
@@ -338,7 +305,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
     },3000)
   }, []);
 
-  const [tab, setTab] = React.useState(0);
+  const [tab, setTab] = React.useState(1);
   const navigate = useNavigate();
   return (
     <Box sx={{position:"relative", minHeight: '100vh'}}>
@@ -423,13 +390,15 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
         sx={{ mb: 3, borderBottom: '1px solid #261F53', minHeight: 48 }}
         TabIndicatorProps={{ style: { background: '#9F31D9', height: 3 } }}
       >
-        <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>ShortListed</span>} sx={{ minWidth: 120 }} />
-        <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
+         <Tab label={<span style={{ color: tab === 0 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Applied</span>} sx={{ minWidth: 120 }} />
+        <Tab label={<span style={{ color: tab === 1 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>ShortListed</span>} sx={{ minWidth: 120 }} />
+        <Tab label={<span style={{ color: tab === 2 ? '#9F31D9' : 'white', fontWeight: 400, fontSize: 18 }}>Rejected</span>} sx={{ minWidth: 120 }} />
       </Tabs>
       
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
       
-        {(tab === 0 ? candiateDetailsDrive : rejectedCandidateDetails).map((candidate: any) => (
+        {(tab === 0 ? candiateDetailsDrive.filter((candidate:any) => candidate.finalScore === null || candidate.finalScore === undefined) : tab == 1 ? candiateDetailsDrive.filter((candidate:any) => candidate.finalScore !== null && candidate.finalScore !== undefined) : rejectedCandidateDetails.filter((candidate:any) => candidate.finalScore !== null && candidate.finalScore !== undefined && candidate.
+RecruiterApproval === "Reject")).map((candidate: any) => (
           <GradientCard
             key={candidate.id}
             gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
@@ -505,7 +474,7 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
             </Box>
             <Box sx={{ display: 'flex', gap: 2, mt: 5 }}>
 
-              {tab === 0 ?
+              {tab === 1 ?
                 <>
                   <Button
                     variant="outlined"
