@@ -212,6 +212,7 @@ const handleVapiChatClick = (active: boolean) => {
   // },5000)
  
 }; useEffect(() => {
+  console.log("createPosition",createPosition)
   if (vocieActive && createPosition.length > 0 && createPosition[0]?.fields) {
     const timer = setTimeout(() => {
       const updatedValues = getInitialValues(createPosition[0].fields);
