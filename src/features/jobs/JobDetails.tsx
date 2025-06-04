@@ -239,7 +239,7 @@ const [ originalDriveFiles, setOneDriveFiles] = useState<any>([])
       const ondeRdiveId = candiateDetailsDriveBackup.filter((drive:any) => drive?.name == record.fields?.CandidateFileName)[0]?.id
       if (!name) return;
 
-      if (status === "Reject") {
+      if (status === "Reject" || finalScore <= 800 ) {
         rejectedCandidatesSet.add(name);
         rejectedCandidates.push({
           name,
@@ -397,8 +397,11 @@ const [ showLoadingDots, setShowLoadingDots] = useState(false)
       
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 5, mt: 2 }}>
       
-        {(tab === 0 ? candiateDetailsDrive.filter((candidate:any) => candidate.finalScore === null || candidate.finalScore === undefined) : tab == 1 ? candiateDetailsDrive.filter((candidate:any) => candidate.finalScore !== null && candidate.finalScore !== undefined) : rejectedCandidateDetails.filter((candidate:any) => candidate.finalScore !== null && candidate.finalScore !== undefined && candidate.
-RecruiterApproval === "Reject")).map((candidate: any) => (
+        {(tab === 0 ? 
+        candiateDetailsDrive.filter((candidate:any) => candidate.finalScore === null || candidate.finalScore === undefined) : 
+        tab == 1 ? 
+        candiateDetailsDrive.filter((candidate:any) => candidate.finalScore !== null && candidate.finalScore !== undefined) : 
+        rejectedCandidateDetails).map((candidate: any) => (
           <GradientCard
             key={candidate.id}
             gradient="linear-gradient(180deg, #36638E 0%, #4C247E 100%)"
@@ -494,7 +497,8 @@ RecruiterApproval === "Reject")).map((candidate: any) => (
                   >
                     Details
                   </Button>
-                    {screeningRecords?.length>0  && <Button
+                    {/* {screeningRecords?.length>0  && 
+                    <Button
                     variant="outlined"
                     sx={{
                       color: 'white',
@@ -511,8 +515,9 @@ RecruiterApproval === "Reject")).map((candidate: any) => (
                     onClick={(event) => handleIntiateCall(event, candidate.airtable_id, "Reject")}
                   >
                     Reject
-                  </Button>}
-                  
+                  </Button>
+                  }
+                   */}
                   
                    
                   {candidate?.RecruiterApproval == "Proceed" ?
@@ -581,7 +586,9 @@ RecruiterApproval === "Reject")).map((candidate: any) => (
                     </Button></>}
 
 
-                </> : <>  <Button
+                </> : <>  
+                
+                {/* <Button
                   variant="contained"
                   sx={{
                     background: 'white',
@@ -611,7 +618,37 @@ RecruiterApproval === "Reject")).map((candidate: any) => (
 
 
                   Select Candiate
-                </Button>
+                </Button> */}
+
+               {  tab == 0 && <Button
+                  variant="contained"
+                  sx={{
+                    background: 'white',
+                    color: '#3a6ea5',
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    px: 2.5,
+                    py: 1,
+                    fontSize: 15,
+                    textTransform: 'none',
+                   
+                    '&:hover': {
+                      background: '#e3e3e3',
+                    },
+                    '&.Mui-disabled': {
+                      background: '#716F6F',
+                      color: '#535353',
+                      cursor: 'not-allowed',
+                    },
+                  }}
+                  disabled={true}
+
+                 
+                >
+
+
+                  Select Candiate
+                </Button>}
                 </>}
             </Box>
           </GradientCard>
